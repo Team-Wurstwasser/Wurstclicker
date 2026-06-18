@@ -48,6 +48,226 @@ body {
     backdrop-filter: blur(2px);
 }
 
+.rebirth-tree-panel {
+    width: min(100%, 920px);
+    background:
+        radial-gradient(circle at top, rgba(255, 215, 0, 0.18), transparent 45%),
+        linear-gradient(180deg, rgba(61, 43, 31, 0.9), rgba(36, 24, 17, 0.96));
+    border: 2px solid rgba(255, 215, 0, 0.35);
+    border-radius: 24px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    padding: 18px;
+    color: #f8efe0;
+}
+
+.rebirth-tree-modal {
+    width: min(92vw, 980px);
+    max-width: 980px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at top, rgba(255, 226, 154, 0.58), transparent 42%),
+        linear-gradient(180deg, #f8efd9 0%, #efe2bf 100%);
+}
+
+.rebirth-tree-modal .settings-header {
+    margin-bottom: 0;
+    padding-bottom: 12px;
+}
+
+.skill-tree-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #3d2b1f;
+    padding: 2px 2px 8px;
+}
+
+.skill-tree-summary span {
+    font-weight: 800;
+    color: #3d2b1f;
+}
+
+.skill-tree-summary p {
+    margin: 0;
+    color: rgba(61, 43, 31, 0.8);
+    line-height: 1.45;
+}
+
+.rebirth-tree-panel.is-hidden {
+    display: none;
+}
+
+.rebirth-tree-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.rebirth-tree-header h3 {
+    margin: 0 0 4px;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #ffd54f;
+}
+
+.rebirth-tree-header p {
+    margin: 0;
+    color: rgba(248, 239, 224, 0.8);
+    font-size: 0.92rem;
+}
+
+.rebirth-tree-points {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+    font-size: 0.88rem;
+    color: rgba(248, 239, 224, 0.9);
+    white-space: nowrap;
+}
+
+.rebirth-tree-points strong {
+    color: #ffd54f;
+}
+
+.rebirth-tree-scroll {
+    flex: 1;
+    min-height: 520px;
+    max-height: 68vh;
+    overflow: auto;
+    width: 100%;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(61, 43, 31, 0.06), rgba(61, 43, 31, 0.12));
+    border: 1px solid rgba(61, 43, 31, 0.12);
+    padding: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #b58a3a rgba(255, 255, 255, 0.05);
+}
+
+.rebirth-tree-scroll::-webkit-scrollbar { height: 10px; width: 10px; }
+.rebirth-tree-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); border-radius: 999px; }
+.rebirth-tree-scroll::-webkit-scrollbar-thumb { background: #b58a3a; border-radius: 999px; }
+
+.rebirth-tree-map {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1080 / 760;
+    min-height: 640px;
+    max-height: none;
+    margin: 0 auto;
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.7), transparent 35%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 246, 216, 0.95));
+    border: 1px solid rgba(61, 43, 31, 0.08);
+    overflow: hidden;
+}
+
+.rebirth-tree-map::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(rgba(109, 76, 65, 0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.28;
+    pointer-events: none;
+}
+
+.rebirth-tree-link {
+    position: absolute;
+    height: 5px;
+    transform-origin: 0 50%;
+    background: linear-gradient(90deg, rgba(181, 138, 58, 0.12), rgba(181, 138, 58, 0.55));
+    border-radius: 999px;
+    opacity: 0.5;
+    z-index: 1;
+    filter: drop-shadow(0 0 3px rgba(181, 138, 58, 0.2));
+}
+
+.rebirth-tree-link.active {
+    opacity: 1;
+    background: linear-gradient(90deg, rgba(255, 243, 198, 0.65), rgba(214, 164, 69, 0.95));
+    filter: drop-shadow(0 0 8px rgba(214, 164, 69, 0.45));
+}
+
+.rebirth-tree-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: clamp(138px, 13vw, 168px);
+    min-height: 102px;
+    padding: 11px 12px 12px;
+    border: 2px solid rgba(181, 138, 58, 0.42);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(110, 70, 42, 0.98), rgba(77, 49, 31, 0.98));
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    color: #fffdf3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+}
+
+.rebirth-tree-node:hover:not(:disabled),
+.rebirth-tree-node.available {
+    border-color: rgba(214, 164, 69, 0.82);
+    filter: brightness(1.08);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.24), 0 0 0 2px rgba(214, 164, 69, 0.08);
+}
+
+.rebirth-tree-node:disabled {
+    cursor: not-allowed;
+}
+
+.rebirth-tree-node.locked {
+    filter: grayscale(0.35) saturate(0.75) opacity(0.72);
+}
+
+.rebirth-tree-node.bought {
+    border-color: rgba(123, 189, 127, 0.8);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.24), 0 0 0 2px rgba(123, 189, 127, 0.14);
+}
+
+.rebirth-tree-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+}
+
+.rebirth-tree-name {
+    font-size: 0.83rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.rebirth-tree-effect {
+    font-size: 0.72rem;
+    color: rgba(255, 248, 225, 0.88);
+    line-height: 1.15;
+}
+
+.rebirth-tree-cost {
+    font-size: 0.72rem;
+    color: #ffd06a;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
 #rebirth-info {
     font-weight: 700;
     color: #4e342e;
@@ -473,7 +693,7 @@ body {
     resize: none;
 }
 
-#close-settings, #close-save, #close-load, #close-upgrade-pop{
+#close-settings, #close-save, #close-load, #close-upgrade-pop, #close-rebirth-tree{
     background: none;
     border: none;
     cursor: pointer;
@@ -505,6 +725,29 @@ body {
 
 @media (max-width: 800px) {
     #shop-toggle { display: flex; }
+
+    .rebirth-tree-modal {
+        width: min(95vw, 980px);
+        max-height: 94vh;
+        padding: 18px;
+    }
+
+    .rebirth-tree-header {
+        flex-direction: column;
+    }
+
+    .rebirth-tree-points {
+        align-items: flex-start;
+    }
+
+    .rebirth-tree-scroll {
+        min-height: 480px;
+        max-height: 72vh;
+    }
+
+    .rebirth-tree-map {
+        min-height: 560px;
+    }
 
     .rebirth-panel {
         width: min(95vw, 380px);

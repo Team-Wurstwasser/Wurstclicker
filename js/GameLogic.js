@@ -17,6 +17,7 @@ const state = {
 
 const factoryData = {};
 const upgradeData = {};
+const rebirthTreeData = {};
 const visibleupgrades = new Set();
 let currentUpgradeToBuy = null;
 
@@ -43,6 +44,11 @@ const elements = {
     closeLoad: document.getElementById('close-load'),
     rebirthInfo: document.getElementById('rebirth-info'),
     rebirthBtn: document.getElementById('rebirth-btn'),
+    rebirthTreeOverlay: document.getElementById('rebirth-tree-overlay'),
+    closeRebirthTree: document.getElementById('close-rebirth-tree'),
+    rebirthTreePoints: document.getElementById('rebirth-tree-points'),
+    rebirthTreeScroll: document.getElementById('rebirth-tree-scroll'),
+    rebirthTreeMap: document.getElementById('rebirth-tree-map'),
     upgradePopup: document.getElementById('upgrade-popup'),
     closeUpgradePop: document.getElementById('close-upgrade-pop'),
     confirmUpgradeBuy: document.getElementById('confirm-upgrade-buy'),
@@ -97,6 +103,47 @@ function getRebirthPoints() {
 
 function getRebirthMultiplier() {
     return new Decimal(1).plus(state.rebirthPoints.times(rebirthConfig.bonusPerPoint));
+}
+
+function updateRebirthTree() {
+    const mapWidth = elements.rebirthTreeMap.clientWidth || 1080;
+    const mapHeight = elements.rebirthTreeMap.clientHeight || 760;
+    const nodeWidth = Math.max(124, Math.min(160, mapWidth * 0.15));
+    const nodeHeight = Math.max(88, Math.min(104, mapHeight * 0.13));
+
+    Object.entries(rebirthTreeData).forEach(([key, node]) => {
+        if (!node.dom) return;
+
+        const available = true;
+        node.dom.classList.toggle('bought', !!node.bought);
+        node.dom.classList.toggle('available', available);
+        node.dom.classList.toggle('locked', !node.bought && !available);
+        node.dom.disabled = !available;
+
+        const label = node.dom.querySelector('.rebirth-tree-effect');
+        if (label) {
+            label.innerText = "1";
+        }
+    });
+
+    elements.rebirthTreeMap.querySelectorAll('.rebirth-tree-link').forEach(link => {
+        const fromNode = rebirthTreeData[link.dataset.from];
+        const toNode = rebirthTreeData[link.dataset.to];
+        const fromX = ((fromNode.x || 0) / 1080) * mapWidth;
+        const fromY = ((fromNode.y || 0) / 760) * mapHeight;
+        const toX = ((toNode.x || 0) / 1080) * mapWidth;
+        const toY = ((toNode.y || 0) / 760) * mapHeight;
+        const deltaX = toX - fromX;
+        const deltaY = toY - fromY;
+        const length = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+        const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+        link.style.left = `${fromX}px`;
+        link.style.top = `${fromY}px`;
+        link.style.width = `${length}px`;
+        link.style.transform = `rotate(${angle}deg)`;
+        link.classList.toggle('active', !!fromNode?.bought);
+    });
 }
 
 function getFactoryCPS() {
@@ -155,9 +202,8 @@ function performRebirth() {
     visibleupgrades.clear();
     updateUI();
     saveGame();
-
-    alert(`Rebirth abgeschlossen! +${formatNumber(points)} Punkte erhalten.`);
-}
+    updateRebirthTree();
+    showOverlay(elements.rebirthTreeOverlay);}
 
 function updateUI() {
     elements.cookieDisplay.innerText = formatNumber(state.cookies);
@@ -258,7 +304,7 @@ function applyUpgrade(key, restore = false) {
             state.clickMultiplier = state.clickMultiplier.times(factor);
             break;
 
-        case "multiplier":
+        case "factoryMultiplier":
             factoryData[upg.target].multiplier = factoryData[upg.target].multiplier.times(factor);
             break;
 
@@ -278,6 +324,49 @@ function applyUpgrade(key, restore = false) {
 
     if (!restore) {
         updateUI();
+        saveGame();
+    }
+}
+
+function applyRebirth(key, restore = false) {
+    const rebirth = rebirthTreeData[key];
+    if (!rebirth || rebirth.bought || (!restore && !(rebirth.prereqs || []).every(reqKey => rebirthTreeData[reqKey]?.bought))) return;
+
+    if (!restore) {
+        if (state.rebirthPoints.lt(rebirth.cost)) return;
+
+        state.rebirthPoints = state.rebirthPoints.minus(rebirth.cost);
+    }
+
+    rebirth.bought = true;
+
+    const factor = new Decimal(rebirth.factor || 1);
+    const value = new Decimal(rebirth.value || 0);
+
+    switch (rebirth.type) {
+        case "clickBoost":
+            state.clickBonus = state.clickBonus.plus(value);
+            break;
+        
+        case "clickMultiplier":
+            state.clickMultiplier = state.clickMultiplier.times(factor);
+            break;
+
+        case "factoryMultiplier":
+            factoryData[rebirth.target].multiplier = factoryData[rebirth.target].multiplier.times(factor);
+            break;
+
+        case "globalMultiplier":
+            Object.keys(factoryData).forEach(m => {
+                factoryData[m].multiplier = factoryData[m].multiplier.times(factor);
+            });
+            state.clickMultiplier = state.clickMultiplier.times(factor);
+            break;
+    }
+
+    if (!restore) {
+        updateUI();
+        updateRebirthTree();
         saveGame();
     }
 }
@@ -325,6 +414,7 @@ elements.shopToggle.addEventListener('click', () => {
 const showOverlay = (o) => o.style.display = 'flex';
 const hideOverlay = (o) => o.style.display = 'none';
 
+elements.closeRebirthTree.addEventListener('click', () => hideOverlay(elements.rebirthTreeOverlay));
 elements.settingsBtn.addEventListener('click', () => showOverlay(elements.settingsOverlay));
 elements.closeSettings.addEventListener('click', () => hideOverlay(elements.settingsOverlay));
 
@@ -402,7 +492,6 @@ setInterval(() => {
 setInterval(saveGame, 30000);
 window.addEventListener('beforeunload', saveGame);
 
-initShop();
-initUpgrades();
+initAll();
 loadGame();
 updateUI();

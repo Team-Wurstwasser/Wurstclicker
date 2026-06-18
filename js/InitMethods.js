@@ -49,3 +49,51 @@ function initUpgrades() {
         };
     }
 }
+
+function initRebirthTree() {
+    elements.rebirthTreeMap.innerHTML = '';
+
+    for (const [key, data] of Object.entries(rebirthTreeConfig)) {
+        rebirthTreeData[key] = {
+            ...data,
+            cost: new Decimal(data.cost),
+            bought: false,
+            dom: null
+        };
+    }
+
+    Object.entries(rebirthTreeData).forEach(([key, node]) => {
+        (node.parents || []).forEach(parentKey => {
+            if (!rebirthTreeData[parentKey]) return;
+
+            const link = document.createElement('div');
+            link.className = 'rebirth-tree-link';
+            link.dataset.from = parentKey;
+            link.dataset.to = key;
+            elements.rebirthTreeMap.appendChild(link);
+        });
+    });
+
+    Object.entries(rebirthTreeData).forEach(([key, node]) => {
+        const nodeBtn = document.createElement('button');
+        nodeBtn.className = 'rebirth-tree-node';
+        nodeBtn.dataset.nodeKey = key;
+        nodeBtn.innerHTML = `
+            <img src="${node.icon}" alt="${node.name}" class="rebirth-tree-icon">
+            <span class="rebirth-tree-name">${node.name}</span>
+            <span class="rebirth-tree-effect"></span>
+            <span class="rebirth-tree-cost">${formatNumber(node.cost)} RP</span>
+        `;
+        nodeBtn.style.left = `${(node.x / 1080) * 100}%`;
+        nodeBtn.style.top = `${(node.y / 760) * 100}%`;
+        nodeBtn.addEventListener('click', () => applyRebirth(key));
+        elements.rebirthTreeMap.appendChild(nodeBtn);
+        node.dom = nodeBtn;
+    });
+}
+
+function initAll() {
+    initShop();
+    initUpgrades();
+    initRebirthTree();
+}

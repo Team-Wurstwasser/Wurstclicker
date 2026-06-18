@@ -16,6 +16,9 @@ function getSaveData() {
         upgrades: {
             bought: Object.keys(upgradeData).filter(key => upgradeData[key].bought),
             visible: Array.from(visibleupgrades)
+        },
+        rebirthTree: {
+            bought: Object.keys(rebirthTreeData).filter(key => rebirthTreeData[key].bought)
         }
     };
 }
@@ -90,6 +93,18 @@ function applySaveData(data) {
             });
         }
 
+        for (const key in rebirthTreeData) {
+            rebirthTreeData[key].bought = false;
+        }
+
+        if (data.rebirthTree?.bought) {
+            data.rebirthTree.bought.forEach(key => {
+                if (rebirthTreeData[key]) {
+                    applyRebirth(key, true);
+                }
+            });
+        }
+        
         visibleupgrades.clear();
         if (data.upgrades?.visible) {
             data.upgrades.visible.forEach(key => {

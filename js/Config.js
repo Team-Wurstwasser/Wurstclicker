@@ -125,7 +125,7 @@ const upgradeConfig = {
     },
     huette_1: {
         name: "Bio-Keks",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "huette",
         price: new Decimal(500),
         factor: new Decimal(2),
@@ -134,7 +134,7 @@ const upgradeConfig = {
     },
     huette_2: {
         name: "Keks-Mutation",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "huette",
         price: new Decimal(15000),
         factor: new Decimal(4),
@@ -143,7 +143,7 @@ const upgradeConfig = {
     },
     huette_3: {
         name: "Hütten-Automatik",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "huette",
         price: new Decimal(100000),
         factor: new Decimal(10),
@@ -152,7 +152,7 @@ const upgradeConfig = {
     },
     kristall_1: {
         name: "Hochglanz-Prismen",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "kristall",
         price: new Decimal(5000),
         factor: new Decimal(2),
@@ -161,7 +161,7 @@ const upgradeConfig = {
     },
     kristall_2: {
         name: "Zucker-Diamanten",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "kristall",
         price: new Decimal(250000),
         factor: new Decimal(4),
@@ -170,7 +170,7 @@ const upgradeConfig = {
     },
     kristall_3: {
         name: "Reinstkristall-Gitter",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "kristall",
         price: new Decimal(25000000),
         factor: new Decimal(8),
@@ -179,7 +179,7 @@ const upgradeConfig = {
     },
     plasma_1: {
         name: "Ionen-Beschleuniger",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "plasma",
         price: new Decimal(50000),
         factor: new Decimal(2),
@@ -188,7 +188,7 @@ const upgradeConfig = {
     },
     plasma_2: {
         name: "Dunkle Materie Kern",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "plasma",
         price: new Decimal(3000000),
         factor: new Decimal(4),
@@ -197,7 +197,7 @@ const upgradeConfig = {
     },
     plasma_3: {
         name: "Supernova-Einspeisung",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "plasma",
         price: new Decimal(150000000),
         factor: new Decimal(10),
@@ -206,7 +206,7 @@ const upgradeConfig = {
     },
     labor_1: {
         name: "Quanten-Backofen",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "labor",
         price: new Decimal(500000),
         factor: new Decimal(2),
@@ -215,7 +215,7 @@ const upgradeConfig = {
     },
     labor_2: {
         name: "Zeitkrümmungs-Backen",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "labor",
         price: new Decimal(40000000),
         factor: new Decimal(4),
@@ -224,7 +224,7 @@ const upgradeConfig = {
     },
     labor_3: {
         name: "Parallelwelt-Labor",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "labor",
         price: new Decimal(2000000000),
         factor: new Decimal(10),
@@ -233,7 +233,7 @@ const upgradeConfig = {
     },
     former_1: {
         name: "Atomare Symmetrie",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "former",
         price: new Decimal(50000000),
         factor: new Decimal(2),
@@ -242,7 +242,7 @@ const upgradeConfig = {
     },
     former_2: {
         name: "Fraktale Geometrie",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "former",
         price: new Decimal(5000000000),
         factor: new Decimal(15),
@@ -251,7 +251,7 @@ const upgradeConfig = {
     },
     ofen_1: {
         name: "Ereignishorizont-Grill",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "ofen",
         price: new Decimal(5000000000),
         factor: new Decimal(2),
@@ -260,7 +260,7 @@ const upgradeConfig = {
     },
     ofen_2: {
         name: "Singularitäts-Hitze",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "ofen",
         price: new Decimal(250000000000),
         factor: new Decimal(4),
@@ -269,7 +269,7 @@ const upgradeConfig = {
     },
     sonde_1: {
         name: "Deep-Space-Backen",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "sonde",
         price: new Decimal(50000000000),
         factor: new Decimal(2),
@@ -278,7 +278,7 @@ const upgradeConfig = {
     },
     sonde_2: {
         name: "Galaktisches Netzwerk",
-        type: "multiplier",
+        type: "factoryMultiplier",
         target: "sonde",
         price: new Decimal(1000000000000),
         factor: new Decimal(5),
@@ -315,4 +315,106 @@ const rebirthConfig = {
     baseCookies: new Decimal(1000000),
     bonusPerPoint: new Decimal(0.05),
     pointsMultiplier: new Decimal(1.15)
+};
+
+const rebirthTreeConfig = {
+    root: {
+        name: "Rebirth-Kern",
+        desc: "Der Startpunkt des dauerhaften Mindmaps.",
+        type: "clickBonus",
+        bonus: new Decimal(1),
+        cost: new Decimal(1),
+        icon: "img/Logo.png",
+        x: 530,
+        y: 70,
+        parents: []
+    },
+    quick_1: {
+        name: "Schnellfinger",
+        desc: "Ein kleiner Bonus für jeden Klick.",
+        type: "clickBonus",
+        bonus: new Decimal(1),
+        cost: new Decimal(2),
+        icon: "img/Keks.svg",
+        x: 300,
+        y: 220,
+        parents: ["root"]
+    },
+    quick_2: {
+        name: "Doppelklick",
+        desc: "Verdoppelt die Klickkraft.",
+        type: "clickMultiplier",
+        factor: new Decimal(2),
+        cost: new Decimal(4),
+        icon: "img/Keks.svg",
+        x: 190,
+        y: 380,
+        parents: ["quick_1"]
+    },
+    quick_3: {
+        name: "Klick-Ritual",
+        desc: "Klicks werden noch einmal deutlich stärker.",
+        type: "clickBonus",
+        bonus: new Decimal(3),
+        cost: new Decimal(7),
+        icon: "img/Keks.svg",
+        x: 120,
+        y: 540,
+        parents: ["quick_2"]
+    },
+    oven_1: {
+        name: "Ofen-Segen",
+        desc: "Alle Gebäude arbeiten effizienter.",
+        type: "globalMultiplier",
+        factor: new Decimal(1.25),
+        cost: new Decimal(2),
+        icon: "img/Logo.png",
+        x: 760,
+        y: 220,
+        parents: ["root"]
+    },
+    oven_2: {
+        name: "Produktionskette",
+        desc: "Noch mehr Produktionskraft für alles.",
+        type: "globalMultiplier",
+        factor: new Decimal(1.5),
+        cost: new Decimal(4),
+        icon: "img/Logo.png",
+        x: 870,
+        y: 380,
+        parents: ["oven_1"]
+    },
+    oven_3: {
+        name: "Massenproduktion",
+        desc: "Gebäude bekommen einen großen Schub.",
+        type: "factoryMultiplier",
+        factor: new Decimal(2),
+        cost: new Decimal(7),
+        icon: "img/Logo.png",
+        x: 960,
+        y: 540,
+        parents: ["oven_2"]
+    },
+    core_1: {
+        name: "Wurstgehirn",
+        desc: "Klicks und Produktion treffen sich in der Mitte.",
+        type: "clickMultiplier",
+        factor: new Decimal(2),
+        cost: new Decimal(3),
+        icon: "img/Logo.png",
+        x: 530,
+        y: 250,
+        parents: ["root"]
+    },
+    apex: {
+        name: "Heilige Krume",
+        desc: "Der Endpunkt des Baums mit einem starken Gesamtbonus.",
+        type: "globalMultiplier",
+        factor: new Decimal(2),
+        cost: new Decimal(10),
+        icon: "img/Keks.svg",
+        x: 530,
+        y: 640,
+        parents: ["quick_3", "oven_3", "core_1"]
+    }
 };
