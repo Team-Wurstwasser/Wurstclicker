@@ -81,7 +81,7 @@ function initRebirthTree() {
         nodeBtn.innerHTML = `
             <img src="${node.icon}" alt="${node.name}" class="rebirth-tree-icon">
             <span class="rebirth-tree-name">${node.name}</span>
-            <span class="rebirth-tree-effect"></span>
+            <span class="rebirth-tree-effect">${node.desc}</span>
             <span class="rebirth-tree-cost">${formatNumber(node.cost)} RP</span>
         `;
         nodeBtn.style.left = `${(node.x / 1080) * 100}%`;

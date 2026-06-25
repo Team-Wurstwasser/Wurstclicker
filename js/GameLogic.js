@@ -112,20 +112,24 @@ function updateRebirthTree() {
     const nodeHeight = Math.max(88, Math.min(104, mapHeight * 0.13));
 
     Object.entries(rebirthTreeData).forEach(([key, node]) => {
-        if (!node.dom) return;
+        const hasEnoughPoints = state.rebirthPoints.gte(node.cost || 0);
+        
+        const parentsMet = (node.parents || []).every(reqKey => {
+            const reqNode = rebirthTreeData[reqKey];
+            return reqNode && reqNode.bought === true;
+        });
 
-        const available = true;
+        const available = !node.bought && parentsMet && hasEnoughPoints;
+
         node.dom.classList.toggle('bought', !!node.bought);
         node.dom.classList.toggle('available', available);
         node.dom.classList.toggle('locked', !node.bought && !available);
-        node.dom.disabled = !available;
-
-        const label = node.dom.querySelector('.rebirth-tree-effect');
-        if (label) {
-            label.innerText = "1";
-        }
+        
+        node.dom.disabled = node.bought || !available;
     });
 
+    elements.rebirthTreePoints.innerText = `Verfügbare Punkte: ${formatNumber(state.rebirthPoints)}`;
+    
     elements.rebirthTreeMap.querySelectorAll('.rebirth-tree-link').forEach(link => {
         const fromNode = rebirthTreeData[link.dataset.from];
         const toNode = rebirthTreeData[link.dataset.to];
@@ -203,7 +207,8 @@ function performRebirth() {
     updateUI();
     saveGame();
     updateRebirthTree();
-    showOverlay(elements.rebirthTreeOverlay);}
+    showOverlay(elements.rebirthTreeOverlay);
+}
 
 function updateUI() {
     elements.cookieDisplay.innerText = formatNumber(state.cookies);

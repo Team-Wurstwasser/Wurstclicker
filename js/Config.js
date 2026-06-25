@@ -386,8 +386,9 @@ const rebirthTreeConfig = {
     },
     oven_3: {
         name: "Massenproduktion",
-        desc: "Gebäude bekommen einen großen Schub.",
+        desc: "Ofen bekommen einen großen Schub.",
         type: "factoryMultiplier",
+        target: "ofen",
         factor: new Decimal(2),
         cost: new Decimal(7),
         icon: "img/Logo.png",
