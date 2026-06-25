@@ -1,17 +1,19 @@
 function getSaveData() {
     return {
         stats: {
-            cookies: state.cookies.toString(),
-            rebirthPoints: state.rebirthPoints.toString(),
-            totalRebirths: state.totalRebirths.toString(),
-            lifetimeCookies: state.lifetimeCookies.toString(),
-            lifetimeRebirthPoints: state.lifetimeRebirthPoints.toString(),
+            cookies: state.cookies,
+            rebirthPoints: state.rebirthPoints,
+            totalRebirths: state.totalRebirths,
+            lifetimeCookies: state.lifetimeCookies,
+            lifetimeRebirthPoints: state.lifetimeRebirthPoints,
             created: state.created.getTime(),
         },
         factories: Object.keys(factoryData).reduce((all, key) => {
-            all[key] = {
-                amount: factoryData[key].amount.toString()
-            };
+            if (factoryData[key]) {
+                all[key] = {
+                    amount: factoryData[key].amount
+                };
+            }
             return all;
         }, {}),
         upgrades: {
@@ -34,7 +36,7 @@ function applySaveData(data) {
         state.rebirthPoints = new Decimal(stats.rebirthPoints || 0);
         state.totalRebirths = new Decimal(stats.totalRebirths || 0);
         state.lifetimeCookies = new Decimal(stats.lifetimeCookies || stats.cookies || 0);
-        state.lifetimeRebirthPoints = new Decimal(stats.lifetimeRebirthPoints || stats.rebirthPoints || 0);
+        state.lifetimeRebirthPoints = new Decimal(stats.lifetimeRebirthPoints || stats.rebirthPoints || 0);  
         state.created = new Date(stats.created || Date.now());
 
         state.clickValue = new Decimal(1);
@@ -43,11 +45,10 @@ function applySaveData(data) {
 
         if (data.factories) {
             for (const key in data.factories) {
-                if (factoryData[key]) {
-                    const fData = data.factories[key];
-                    const savedAmount = new Decimal(fData.amount || 1).toNumber();
+                if (factoryData[key] && data.factories[key]) {
+                    const savedAmount = new Decimal(data.factories[key].amount).toNumber();
 
-                    factoryData[key].amount = new Decimal(1);
+                    factoryData[key].amount = new Decimal(0);
                     factoryData[key].price = factoryData[key].basePrice;
                     factoryData[key].multiplier = new Decimal(1);
 
@@ -59,7 +60,7 @@ function applySaveData(data) {
         }
 
         for (const key in upgradeData) {
-            upgradeData[key].bought = false;
+            if (upgradeData[key]) upgradeData[key].bought = false;
         }
         if (data.upgrades?.bought) {
             data.upgrades.bought.forEach(key => {
@@ -70,7 +71,7 @@ function applySaveData(data) {
         }
 
         for (const key in rebirthTreeData) {
-            rebirthTreeData[key].bought = false;
+             if (rebirthTreeData[key]) rebirthTreeData[key].bought = false;
         }
         if (data.rebirthTree?.bought) {
             data.rebirthTree.bought.forEach(key => {
@@ -79,14 +80,14 @@ function applySaveData(data) {
                 }
             });
         }
-
-        visibleupgrades.clear();
-        if (data.upgrades?.visible) {
-            data.upgrades.visible.forEach(key => {
-                if (upgradeData[key] && !upgradeData[key].bought) {
-                    visibleupgrades.add(key);
-                }
-            });
+        
+            visibleupgrades.clear();
+            if (data.upgrades?.visible) {
+                data.upgrades.visible.forEach(key => {
+                    if (upgradeData[key] && !upgradeData[key].bought) {
+                        visibleupgrades.add(key);
+                    }
+                });
         }
     } catch (e) {
         console.error("Fehler beim Laden des Spielstands:", e);
@@ -108,6 +109,12 @@ function saveGame() {
 }
 
 function loadGame() {
-    const savedData = localStorage.getItem('kekslefant_save');
-    if (savedData) applySaveData(JSON.parse(savedData));
+    try {
+        const savedData = localStorage.getItem('kekslefant_save');
+        if (savedData) {
+            applySaveData(JSON.parse(savedData));
+        }
+    } catch (e) {
+        console.error("LocalStorage konnte nicht gelesen werden:", e);
+    }
 }

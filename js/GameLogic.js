@@ -13,7 +13,7 @@ const state = {
     lifetimeRebirthPoints: new Decimal(0),
     isWurstMode: false,
     lastUpdate: Date.now(),
-    created: Date.now()
+    created: new Date()
 };
 
 const factoryData = {};
