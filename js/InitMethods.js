@@ -84,8 +84,8 @@ function initRebirthTree() {
             <span class="rebirth-tree-effect">${node.desc}</span>
             <span class="rebirth-tree-cost">${formatNumber(node.cost)} RP</span>
         `;
-        nodeBtn.style.left = `${(node.x / 1080) * 100}%`;
-        nodeBtn.style.top = `${(node.y / 760) * 100}%`;
+        nodeBtn.style.left = `${(node.x / 1600) * 100}%`;
+        nodeBtn.style.top = `${(node.y / 1000) * 100}%`;
         nodeBtn.addEventListener('click', () => applyRebirth(key));
         elements.rebirthTreeMap.appendChild(nodeBtn);
         node.dom = nodeBtn;

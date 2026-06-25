@@ -107,8 +107,8 @@ function getRebirthMultiplier() {
 }
 
 function updateRebirthTree() {
-    const mapWidth = elements.rebirthTreeMap.clientWidth || 1080;
-    const mapHeight = elements.rebirthTreeMap.clientHeight || 760;
+    const mapWidth = elements.rebirthTreeMap.clientWidth || 1600;
+    const mapHeight = elements.rebirthTreeMap.clientHeight || 1000;
     const nodeWidth = Math.max(124, Math.min(160, mapWidth * 0.15));
     const nodeHeight = Math.max(88, Math.min(104, mapHeight * 0.13));
 
@@ -134,10 +134,10 @@ function updateRebirthTree() {
     elements.rebirthTreeMap.querySelectorAll('.rebirth-tree-link').forEach(link => {
         const fromNode = rebirthTreeData[link.dataset.from];
         const toNode = rebirthTreeData[link.dataset.to];
-        const fromX = ((fromNode.x || 0) / 1080) * mapWidth;
-        const fromY = ((fromNode.y || 0) / 760) * mapHeight;
-        const toX = ((toNode.x || 0) / 1080) * mapWidth;
-        const toY = ((toNode.y || 0) / 760) * mapHeight;
+        const fromX = ((fromNode.x || 0) / 1600) * mapWidth;
+        const fromY = ((fromNode.y || 0) / 1000) * mapHeight;
+        const toX = ((toNode.x || 0) / 1600) * mapWidth;
+        const toY = ((toNode.y || 0) / 1000) * mapHeight;
         const deltaX = toX - fromX;
         const deltaY = toY - fromY;
         const length = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
@@ -149,6 +149,14 @@ function updateRebirthTree() {
         link.style.transform = `rotate(${angle}deg)`;
         link.classList.toggle('active', !!fromNode?.bought);
     });
+}
+
+function centerRebirthTree() {
+    const scrollContainer = elements.rebirthTreeScroll;
+    const scrollLeft = (elements.rebirthTreeMap.scrollWidth - scrollContainer.clientWidth) / 2;
+
+    scrollContainer.scrollLeft = scrollLeft;
+    scrollContainer.scrollTop = 0;
 }
 
 function getFactoryCPS() {
@@ -209,6 +217,7 @@ function performRebirth() {
     saveGame();
     updateRebirthTree();
     showOverlay(elements.rebirthTreeOverlay);
+    centerRebirthTree();
 }
 
 function updateUI() {

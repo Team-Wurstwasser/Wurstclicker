@@ -319,103 +319,172 @@ const rebirthConfig = {
 
 const rebirthTreeConfig = {
     root: {
-        name: "Rebirth-Kern",
-        desc: "Der Startpunkt des dauerhaften Mindmaps.",
-        type: "clickBonus",
-        bonus: new Decimal(1),
+        name: "Wurstwasser-Quelle",
+        desc: "Gewährt +1 Basis-Klickkraft.",
+        type: "clickBoost",
+        value: new Decimal(1),
         cost: new Decimal(1),
         icon: "img/Logo.png",
-        x: 530,
-        y: 70,
+        x: 800,
+        y: 130,
         parents: []
     },
-    quick_1: {
-        name: "Schnellfinger",
-        desc: "Ein kleiner Bonus für jeden Klick.",
-        type: "clickBonus",
-        bonus: new Decimal(1),
-        cost: new Decimal(2),
-        icon: "img/Keks.svg",
-        x: 300,
-        y: 220,
-        parents: ["root"]
-    },
-    quick_2: {
-        name: "Doppelklick",
-        desc: "Verdoppelt die Klickkraft.",
+
+    click_1: {
+        name: "Wurstfinger",
+        desc: "Klicks x2.",
         type: "clickMultiplier",
         factor: new Decimal(2),
+        cost: new Decimal(2),
+        icon: "img/Keks.svg",
+        x: 200, 
+        y: 180,
+        parents: ["root"]
+    },
+    mid_1: {
+        name: "Wurst-Keks-Symbiose",
+        desc: "Doppelte Produktion für ALLES.",
+        type: "globalMultiplier",
+        factor: new Decimal(2),
         cost: new Decimal(4),
-        icon: "img/Keks.svg",
-        x: 190,
-        y: 380,
-        parents: ["quick_1"]
+        icon: "img/Logo.png",
+        x: 800,
+        y: 320,
+        parents: ["root"]
     },
-    quick_3: {
-        name: "Klick-Ritual",
-        desc: "Klicks werden noch einmal deutlich stärker.",
-        type: "clickBonus",
-        bonus: new Decimal(3),
-        cost: new Decimal(7),
-        icon: "img/Keks.svg",
-        x: 120,
-        y: 540,
-        parents: ["quick_2"]
-    },
-    oven_1: {
-        name: "Ofen-Segen",
-        desc: "Alle Gebäude arbeiten effizienter.",
+    idle_1: {
+        name: "Passives Backen",
+        desc: "Gebäude produzieren 25% mehr.",
         type: "globalMultiplier",
         factor: new Decimal(1.25),
         cost: new Decimal(2),
-        icon: "img/Logo.png",
-        x: 760,
-        y: 220,
+        icon: "img/Ofen.png",
+        x: 1400,
+        y: 180,
         parents: ["root"]
     },
-    oven_2: {
-        name: "Produktionskette",
-        desc: "Noch mehr Produktionskraft für alles.",
-        type: "globalMultiplier",
-        factor: new Decimal(1.5),
-        cost: new Decimal(4),
-        icon: "img/Logo.png",
-        x: 870,
-        y: 380,
-        parents: ["oven_1"]
+    click_2: {
+        name: "Senf-Schub",
+        desc: "Klicks +15.",
+        type: "clickBoost",
+        value: new Decimal(15),
+        cost: new Decimal(5),
+        icon: "img/Keks.svg",
+        x: 200,
+        y: 320,
+        parents: ["click_1"]
     },
-    oven_3: {
-        name: "Massenproduktion",
-        desc: "Ofen bekommen einen großen Schub.",
+    mid_2: {
+        name: "Wurst-Laboratorien",
+        desc: "Licht-Keks-Labore (x5).",
         type: "factoryMultiplier",
-        target: "ofen",
-        factor: new Decimal(2),
-        cost: new Decimal(7),
-        icon: "img/Logo.png",
-        x: 960,
-        y: 540,
-        parents: ["oven_2"]
+        target: "labor",
+        factor: new Decimal(5),
+        cost: new Decimal(10),
+        icon: "img/Labor.png",
+        x: 800,
+        y: 500,
+        parents: ["mid_1"]
     },
-    core_1: {
-        name: "Wurstgehirn",
-        desc: "Klicks und Produktion treffen sich in der Mitte.",
-        type: "clickMultiplier",
+    idle_2: {
+        name: "Dauerwurst",
+        desc: "Alle Gebäude x2.",
+        type: "globalMultiplier",
         factor: new Decimal(2),
-        cost: new Decimal(3),
+        cost: new Decimal(5),
+        icon: "img/Huette.png",
+        x: 1400,
+        y: 320,
+        parents: ["idle_1"]
+    },
+    click_3: {
+        name: "Titan-Hand",
+        desc: "Klicks x5.",
+        type: "clickMultiplier",
+        factor: new Decimal(5),
+        cost: new Decimal(15),
+        icon: "img/Keks.svg",
+        x: 200,
+        y: 460,
+        parents: ["click_2"]
+    },
+    bridge_l: {
+        name: "Klick-Synergie",
+        desc: "Labore verstärken Klicks x10.",
+        type: "clickMultiplier",
+        factor: new Decimal(10),
+        cost: new Decimal(25),
+        icon: "img/Keks.svg",
+        x: 500,
+        y: 400,
+        parents: ["click_2", "mid_2"]
+    },
+    bridge_r: {
+        name: "Maschinen-Kult",
+        desc: "Labor-Wissen optimiert. Global x3.",
+        type: "globalMultiplier",
+        factor: new Decimal(3),
+        cost: new Decimal(25),
+        icon: "img/Former.png",
+        x: 1100,
+        y: 400,
+        parents: ["idle_2", "mid_2"]
+    },
+    idle_3: {
+        name: "Plasma-Würstchen",
+        desc: "Plasma-Generatoren x10.",
+        type: "factoryMultiplier",
+        target: "plasma",
+        factor: new Decimal(10),
+        cost: new Decimal(15),
+        icon: "img/Plasma.png",
+        x: 1400,
+        y: 460,
+        parents: ["idle_2"]
+    },
+    click_4: {
+        name: "Klick-Gott",
+        desc: "Klicks +500.",
+        type: "clickBoost",
+        value: new Decimal(500),
+        cost: new Decimal(40),
+        icon: "img/Keks.svg",
+        x: 200,
+        y: 700,
+        parents: ["click_3", "bridge_l"]
+    },
+    mid_3: {
+        name: "Dimensions-Senf",
+        desc: "Alles produziert x5.",
+        type: "globalMultiplier",
+        factor: new Decimal(5),
+        cost: new Decimal(60),
         icon: "img/Logo.png",
-        x: 530,
-        y: 250,
-        parents: ["root"]
+        x: 800,
+        y: 700,
+        parents: ["bridge_l", "bridge_r"]
+    },
+    idle_4: {
+        name: "Galaktisches Netz",
+        desc: "Sonden x15.",
+        type: "factoryMultiplier",
+        target: "sonde",
+        factor: new Decimal(15),
+        cost: new Decimal(40),
+        icon: "img/Sonde.png",
+        x: 1400,
+        y: 700,
+        parents: ["idle_3", "bridge_r"]
     },
     apex: {
-        name: "Heilige Krume",
-        desc: "Der Endpunkt des Baums mit einem starken Gesamtbonus.",
+        name: "Heiliger Wurstkeks",
+        desc: "Der Höhepunkt. Alles mal 15!",
         type: "globalMultiplier",
-        factor: new Decimal(2),
-        cost: new Decimal(10),
-        icon: "img/Keks.svg",
-        x: 530,
-        y: 640,
-        parents: ["quick_3", "oven_3", "core_1"]
+        factor: new Decimal(15),
+        cost: new Decimal(250),
+        icon: "img/Logo.png",
+        x: 800,
+        y: 870,
+        parents: ["click_4", "mid_3", "idle_4"]
     }
 };

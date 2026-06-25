@@ -488,7 +488,7 @@ body {
 
 .settings-modal.rebirth-tree-modal {
     width: 92vw;
-    max-width: 980px;
+    max-width: 1400px;
     height: 92vh;
     display: flex;
     flex-direction: column;
@@ -531,8 +531,8 @@ body {
 
 .rebirth-tree-map {
     position: relative;
-    width: 1080px;
-    height: 760px;
+    width: 1600px;
+    height: 1000px;
     margin: 0 auto;
     border-radius: 18px;
     background:
@@ -571,7 +571,7 @@ body {
 .rebirth-tree-node {
     position: absolute;
     transform: translate(-50%, -50%);
-    width: clamp(138px, 13vw, 168px);
+    width: 150px;
     min-height: 102px;
     padding: 11px 12px 12px;
     border: 2px solid rgba(181, 138, 58, 0.42);
