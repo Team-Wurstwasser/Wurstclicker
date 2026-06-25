@@ -8,7 +8,6 @@ const state = {
     clickBonus: new Decimal(0),
     clickMultiplier: new Decimal(1),
     rebirthPoints: new Decimal(0),
-    totalRebirthPoints: new Decimal(0),
     totalRebirths: new Decimal(0),
     lifetimeCookies: new Decimal(0),
     lifetimeRebirthPoints: new Decimal(0),
@@ -103,7 +102,7 @@ function getRebirthPoints() {
 }
 
 function getRebirthMultiplier() {
-    return new Decimal(1).plus(state.totalRebirthPoints.times(rebirthConfig.bonusPerPoint));
+    return new Decimal(1).plus(state.lifetimeRebirthPoints.times(rebirthConfig.bonusPerPoint));
 }
 
 function updateRebirthTree() {
@@ -182,7 +181,6 @@ function performRebirth() {
     }
 
     state.rebirthPoints = state.rebirthPoints.plus(points);
-    state.totalRebirthPoints = state.totalRebirthPoints.plus(points);
     state.totalRebirths = state.totalRebirths.plus(1);
     state.lifetimeRebirthPoints = state.lifetimeRebirthPoints.plus(points);
     state.cookies = new Decimal(0);
@@ -217,9 +215,9 @@ function updateUI() {
     elements.cpsDisplay.innerText = formatValue(getFactoryCPS());
     const rebirthMultiplier = getRebirthMultiplier();
 
-    const rebirthBonusPercent = state.rebirthPoints.times(rebirthConfig.bonusPerPoint).times(100).round(0, 0);
+    const rebirthBonusPercent = state.lifetimeRebirthPoints.times(rebirthConfig.bonusPerPoint).times(100).round(0, 0);
     const potentialGain = getRebirthPoints();
-    elements.rebirthInfo.innerText = `Rebirth: ${formatNumber(state.rebirthPoints)} Punkte (+${formatNumber(rebirthBonusPercent)}%)`;
+    elements.rebirthInfo.innerText = `Rebirth: ${formatNumber(state.lifetimeRebirthPoints)} Punkte (+${formatNumber(rebirthBonusPercent)}%)`;
     elements.rebirthBtn.innerText = `Rebirth (+${formatNumber(potentialGain)})`;
     elements.rebirthBtn.disabled = potentialGain.lte(0);
 

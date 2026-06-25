@@ -3,7 +3,6 @@ function getSaveData() {
         stats: {
             cookies: state.cookies.toString(),
             rebirthPoints: state.rebirthPoints.toString(),
-            totalRebirthPoints: state.totalRebirthPoints.toString(),
             totalRebirths: state.totalRebirths.toString(),
             lifetimeCookies: state.lifetimeCookies.toString(),
             lifetimeRebirthPoints: state.lifetimeRebirthPoints.toString()
@@ -36,8 +35,7 @@ function applySaveData(data) {
         state.clickMultiplier = new Decimal(1);
         state.rebirthPoints = new Decimal(data.stats?.rebirthPoints || 0);
         state.totalRebirths = new Decimal(data.stats?.totalRebirths || 0);
-        state.totalRebirthPoints = new Decimal(data.stats?.totalRebirthPoints || 0);
-        state.lifetimeCookies =  new Decimal(data.stats?.lifetimeCookies || 0);
+        state.lifetimeCookies =  new Decimal(data.stats?.lifetimeCookies || data.stats?.cookies || 0);
         state.lifetimeRebirthPoints = new Decimal(data.stats?.lifetimeRebirthPoints || data.stats?.rebirthPoints || 0);
 
         if (data.factories) {
