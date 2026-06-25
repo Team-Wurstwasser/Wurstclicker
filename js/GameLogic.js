@@ -12,7 +12,8 @@ const state = {
     lifetimeCookies: new Decimal(0),
     lifetimeRebirthPoints: new Decimal(0),
     isWurstMode: false,
-    lastUpdate: Date.now()
+    lastUpdate: Date.now(),
+    created: Date.now()
 };
 
 const factoryData = {};
@@ -273,15 +274,21 @@ function checkUpgradeUnlocks() {
     }
 }
 
-function buyFactory(key) {
+function buyFactory(key, restore = false) {
     const upg = factoryData[key];
-    if (state.cookies.gte(upg.price)) {
-        state.cookies = state.cookies.minus(upg.price);
-        upg.amount = upg.amount.plus(1);
-        upg.price = upg.basePrice.times(
-            upg.priceMultiplier.pow(parseInt(upg.amount.toString()))
-        ).round(0, 0);
+    if (!upg || (!restore && state.cookies.lt(upg.price))) return;
 
+    if (!restore) {
+        state.cookies = state.cookies.minus(upg.price);
+    }
+
+    upg.amount = upg.amount.plus(1);
+    
+    upg.price = upg.basePrice.times(
+        upg.priceMultiplier.pow(upg.amount.toNumber())
+    ).round(0, 0);
+
+    if (!restore) {
         updateUI();
         saveGame();
     }

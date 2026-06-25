@@ -5,7 +5,8 @@ function getSaveData() {
             rebirthPoints: state.rebirthPoints.toString(),
             totalRebirths: state.totalRebirths.toString(),
             lifetimeCookies: state.lifetimeCookies.toString(),
-            lifetimeRebirthPoints: state.lifetimeRebirthPoints.toString()
+            lifetimeRebirthPoints: state.lifetimeRebirthPoints.toString(),
+            created: state.created.getTime(),
         },
         factories: Object.keys(factoryData).reduce((all, key) => {
             all[key] = {
@@ -27,26 +28,32 @@ function applySaveData(data) {
     if (!data) return;
 
     try {
-        const loadedCookies = new Decimal(data.stats?.cookies || 0);
+        const stats = data.stats || {};
 
-        state.cookies = loadedCookies;
+        state.cookies = new Decimal(stats.cookies || 0);
+        state.rebirthPoints = new Decimal(stats.rebirthPoints || 0);
+        state.totalRebirths = new Decimal(stats.totalRebirths || 0);
+        state.lifetimeCookies = new Decimal(stats.lifetimeCookies || stats.cookies || 0);
+        state.lifetimeRebirthPoints = new Decimal(stats.lifetimeRebirthPoints || stats.rebirthPoints || 0);
+        state.created = new Date(stats.created || Date.now());
+
         state.clickValue = new Decimal(1);
         state.clickBonus = new Decimal(0);
         state.clickMultiplier = new Decimal(1);
-        state.rebirthPoints = new Decimal(data.stats?.rebirthPoints || 0);
-        state.totalRebirths = new Decimal(data.stats?.totalRebirths || 0);
-        state.lifetimeCookies =  new Decimal(data.stats?.lifetimeCookies || data.stats?.cookies || 0);
-        state.lifetimeRebirthPoints = new Decimal(data.stats?.lifetimeRebirthPoints || data.stats?.rebirthPoints || 0);
 
         if (data.factories) {
             for (const key in data.factories) {
                 if (factoryData[key]) {
                     const fData = data.factories[key];
-                    factoryData[key].amount = new Decimal(fData.amount || 0);
+                    const savedAmount = new Decimal(fData.amount || 1).toNumber();
+
+                    factoryData[key].amount = new Decimal(1);
+                    factoryData[key].price = factoryData[key].basePrice;
                     factoryData[key].multiplier = new Decimal(1);
-                    factoryData[key].price = factoryData[key].basePrice.times(
-                        new Decimal(1.15).pow(parseInt(factoryData[key].amount.toString()))
-                    ).round(0, 0);
+
+                    for (let i = 0; i < savedAmount; i++) {
+                        buyFactory(key, true);
+                    }
                 }
             }
         }
@@ -54,7 +61,6 @@ function applySaveData(data) {
         for (const key in upgradeData) {
             upgradeData[key].bought = false;
         }
-
         if (data.upgrades?.bought) {
             data.upgrades.bought.forEach(key => {
                 if (upgradeData[key]) {
@@ -66,7 +72,6 @@ function applySaveData(data) {
         for (const key in rebirthTreeData) {
             rebirthTreeData[key].bought = false;
         }
-
         if (data.rebirthTree?.bought) {
             data.rebirthTree.bought.forEach(key => {
                 if (rebirthTreeData[key]) {
@@ -74,7 +79,7 @@ function applySaveData(data) {
                 }
             });
         }
-        
+
         visibleupgrades.clear();
         if (data.upgrades?.visible) {
             data.upgrades.visible.forEach(key => {
@@ -84,7 +89,7 @@ function applySaveData(data) {
             });
         }
     } catch (e) {
-        console.error("Fehler beim Laden:", e);
+        console.error("Fehler beim Laden des Spielstands:", e);
     }
 }
 
@@ -96,7 +101,7 @@ function saveGame() {
     const hasNoRebirth = state.lifetimeRebirthPoints.eq(0);
 
     if (hasNoCookies && hasNoFactory && hasNoRebirth) {
-        return; 
+        return;
     }
 
     localStorage.setItem('kekslefant_save', JSON.stringify(getSaveData()));
