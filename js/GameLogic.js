@@ -478,7 +478,7 @@ setInterval(() => {
 }, 100);
 
 setInterval(saveGame, 30000);
-window.addEventListener('beforeunload', saveGame);
+window.addEventListener('beforeunload', saveAll);
 
 initAll();
 initAuth().then(() => {

@@ -23,18 +23,18 @@
     </head>
 
     <body>
-        <div id="auth-screen" style="display:flex; position:fixed; inset:0; background:#3d2b1f; z-index:9999; align-items:center; justify-content:center; flex-direction:column; gap:14px; padding:20px; box-sizing:border-box;">
-            <img src="/img/Logo.png" style="width:90px; height:90px;">
-            <h1 style="color:#fff; margin:0;">Wurstclicker</h1>
-            <div style="background:#fff; border-radius:12px; padding:24px; width:100%; max-width:320px; box-sizing:border-box; display:flex; flex-direction:column; gap:10px;">
-                <input id="auth-email" type="email" placeholder="E-Mail" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
-                <input id="auth-password" type="password" placeholder="Passwort" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
-                <input id="auth-username" type="text" placeholder="Username (nur für Registrierung)" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
-                <div style="display:flex; gap:8px;">
-                    <button id="auth-signin-btn" class="factory-buy-btn" style="flex:1;">Login</button>
-                    <button id="auth-signup-btn" class="factory-buy-btn" style="flex:1;">Registrieren</button>
+        <div id="auth-screen">
+            <img src="/img/Logo.png" class="auth-logo">
+            <h1>Wurstclicker</h1>
+            <div class="auth-box">
+                <input id="auth-email" type="email" placeholder="E-Mail" class="auth-input">
+                <input id="auth-password" type="password" placeholder="Passwort" class="auth-input">
+                <input id="auth-username" type="text" placeholder="Username (nur für Registrierung)" class="auth-input">
+                <div class="auth-btn-row">
+                    <button id="auth-signin-btn" class="factory-buy-btn">Login</button>
+                    <button id="auth-signup-btn" class="factory-buy-btn">Registrieren</button>
                 </div>
-                <p id="auth-error" style="color:#c0392b; font-size:0.85em; min-height:1em; margin:0;"></p>
+                <p id="auth-error"></p>
             </div>
         </div>
 
@@ -123,10 +123,10 @@
                         <img src="/img/Close.png" class="btn-icon">
                     </button>
                 </div>
-                <div class="settings-content" style="text-align: center;">
-                    <img id="up-pop-icon" src="" style="width: 64px; height: 64px; margin-bottom: 15px;">
-                    <p id="up-pop-desc" style="color: #3d2b1f; margin-bottom: 10px;"></p>
-                    <button id="confirm-upgrade-buy" class="factory-buy-btn" style="margin-top: 20px;">
+                <div class="settings-content">
+                    <img id="up-pop-icon" src="">
+                    <p id="up-pop-desc"></p>
+                    <button id="confirm-upgrade-buy" class="factory-buy-btn">
                         <span class="buy-label">Kaufen</span>
                         <span class="buy-price-wrapper">
                             <span id="up-pop-price-btn">0</span>

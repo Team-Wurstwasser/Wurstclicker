@@ -7,6 +7,7 @@ const leaderboardElements = {
 
 async function loadLeaderboard() {
     if (!leaderboardElements.list) return;
+    saveAll();
 
     const { data, error } = await supabaseClient
         .from('leaderboard_with_names') 

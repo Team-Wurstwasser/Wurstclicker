@@ -95,8 +95,6 @@ function applySaveData(data) {
 }
 
 function saveGameToCloud() {
-    if (!currentUser) return;
-
     supabaseClient
         .from('game_saves')
         .select('save_data, updated_at')
@@ -140,31 +138,34 @@ function saveGameToCloud() {
                     if (savedData?.updated_at) {
                         state.lastSave = new Date(savedData.updated_at).getTime();
                     }
-
-                    return supabaseClient
-                        .from('leaderboard')
-                        .select('best_score')
-                        .eq('user_id', currentUser.id)
-                        .maybeSingle();
-                }).then(boardResult => {
-                    if (!boardResult) return;
-
-                    const existingBoard = boardResult.data;
-                    const boardfetchError = boardResult.error;
-
-                    if (boardfetchError) {
-                        return;
-                    } else {
-                        const existingScore = existingBoard?.best_score ? new Decimal(existingBoard.best_score) : new Decimal(0);
-
-                        if (state.lifetimeCookies.gt(existingScore)) {
-                            supabaseClient.from('leaderboard').upsert({
-                                user_id: currentUser.id,
-                                best_score: state.lifetimeCookies.toString()
-                            });
-                        }
-                    }
                 });
+        });
+}
+
+function updateLeaderboard() {
+    supabaseClient
+        .from('leaderboard')
+        .select('best_score')
+        .eq('user_id', currentUser.id)
+        .maybeSingle()
+        .then(boardResult => {
+            if (!boardResult) return;
+
+            const existingBoard = boardResult.data;
+            const boardfetchError = boardResult.error;
+
+            if (boardfetchError) {
+                return;
+            } else {
+                const existingScore = existingBoard?.best_score ? new Decimal(existingBoard.best_score) : new Decimal(0);
+
+                if (state.lifetimeCookies.gt(existingScore)) {
+                    supabaseClient.from('leaderboard').upsert({
+                        user_id: currentUser.id,
+                        best_score: state.lifetimeCookies.toString()
+                    });
+                }
+            }
         });
 }
 
@@ -191,19 +192,35 @@ function loadGameFromCloud() {
         });
 }
 
-function saveGame() {
-    if (isResetting || !currentUser) return;
-
+function isSaveEmpty() {
     const hasNoCookies = state.lifetimeCookies.eq(0);
     const hasNoFactory = Object.values(factoryData).every(factory => factory.amount.eq(0));
     const hasNoRebirth = state.lifetimeRebirthPoints.eq(0);
 
-    if (hasNoCookies && hasNoFactory && hasNoRebirth) {
+    return hasNoCookies && hasNoFactory && hasNoRebirth;
+}
+
+function saveGame() {
+    if (isResetting || !currentUser) return;
+
+    if (isSaveEmpty()) {
         return;
     }
 
     saveGameToCloud();
 }
+
+function saveAll() {
+    if (isResetting || !currentUser) return;
+
+    if (isSaveEmpty()) {
+        return;
+    }
+
+    saveGame();
+    updateLeaderboard();
+}
+
 
 function loadGame() {
     if (!currentUser) return;
