@@ -42,8 +42,8 @@ function initAuth() {
                 showAuthScreen();
             }
         })
-        .catch(err => {
-            console.error("Fehler beim Abrufen der Session:", err);
+        .catch(() => {
+            showAuthScreen();
         });
 }
 
@@ -70,14 +70,13 @@ function signUp() {
         const error = result.error;
 
         if (error) {
-            setAuthError(error.message);
+            setAuthError('Registrierung fehlgeschlagen. Bitte versuche es erneut.');
             return;
         }
 
         setAuthError('Registrierung erfolgreich!');
-    }).catch(err => {
+    }).catch(() => {
         setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
-        console.error(err);
     });
 }
 
@@ -96,14 +95,13 @@ function signIn() {
             const error = result.error;
             
             if (error) {
-                setAuthError(error.message);
+                setAuthError('Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben.');
                 return;
             }
 
             location.reload();
-        }).catch(err => {
+        }).catch(() => {
             setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
-            console.error(err);
         });
 }
 
@@ -112,8 +110,7 @@ function signOutUser() {
         .then(() => {
             location.reload();
         })
-        .catch(err => {
-            console.error("Fehler beim Abmelden:", err);
+        .catch(() => {
             location.reload(); 
         });
 }

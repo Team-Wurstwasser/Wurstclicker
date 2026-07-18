@@ -15,7 +15,6 @@ async function loadLeaderboard() {
         .limit(20);
 
     if (error) {
-        console.error('Bestenliste konnte nicht geladen werden:', error.message);
         return;
     }
 

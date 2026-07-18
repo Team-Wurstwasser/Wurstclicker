@@ -90,7 +90,7 @@ function applySaveData(data) {
             });
         }
     } catch (e) {
-        console.error("Fehler beim Laden des Spielstands:", e);
+        return;
     }
 }
 
@@ -107,7 +107,6 @@ function saveGameToCloud() {
             const fetchError = result.error;
 
             if (fetchError) {
-                console.error("Konnte bestehenden Spielstand nicht prüfen:", fetchError.message);
                 return;
             }
 
@@ -135,7 +134,6 @@ function saveGameToCloud() {
                     const savedData = saveResult.data;
 
                     if (saveError) {
-                        console.error("Cloud-Save fehlgeschlagen:", saveError.message);
                         return;
                     }
 
@@ -155,7 +153,7 @@ function saveGameToCloud() {
                     const boardfetchError = boardResult.error;
 
                     if (boardfetchError) {
-                        console.error("Konnte bestehenden Bestenlisten-Eintrag nicht prüfen:", boardfetchError.message);
+                        return;
                     } else {
                         const existingScore = existingBoard?.best_score ? new Decimal(existingBoard.best_score) : new Decimal(0);
 
@@ -183,7 +181,6 @@ function loadGameFromCloud() {
             const error = result.error;
 
             if (error) {
-                console.error("Cloud-Save konnte nicht geladen werden:", error.message);
                 return;
             }
 
