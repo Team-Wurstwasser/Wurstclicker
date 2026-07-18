@@ -12,10 +12,32 @@
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
         <link rel="icon" type="image/png" sizes="256x256" href="/img/Logo.png">
         <link rel="stylesheet" href="/Style.css">
-        <script src="/js/Main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script>
+            const supabaseClient = supabase.createClient(
+                'https://eqvxzmurgwwdtsttxlzu.supabase.co',
+                'sb_publishable_kATp24ebCYtNrUk1fZkClw_H2WPNu_1'
+            );
+        </script>
+        <script src="js/Main.js"></script>
     </head>
 
     <body>
+        <div id="auth-screen" style="display:flex; position:fixed; inset:0; background:#3d2b1f; z-index:9999; align-items:center; justify-content:center; flex-direction:column; gap:14px; padding:20px; box-sizing:border-box;">
+            <img src="/img/Logo.png" style="width:90px; height:90px;">
+            <h1 style="color:#fff; margin:0;">Wurstclicker</h1>
+            <div style="background:#fff; border-radius:12px; padding:24px; width:100%; max-width:320px; box-sizing:border-box; display:flex; flex-direction:column; gap:10px;">
+                <input id="auth-email" type="email" placeholder="E-Mail" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                <input id="auth-password" type="password" placeholder="Passwort" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                <input id="auth-username" type="text" placeholder="Username (nur für Registrierung)" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                <div style="display:flex; gap:8px;">
+                    <button id="auth-signin-btn" class="factory-buy-btn" style="flex:1;">Login</button>
+                    <button id="auth-signup-btn" class="factory-buy-btn" style="flex:1;">Registrieren</button>
+                </div>
+                <p id="auth-error" style="color:#c0392b; font-size:0.85em; min-height:1em; margin:0;"></p>
+            </div>
+        </div>
+
         <button id="shop-toggle">
             <img src="/img/Shop.png" class="btn-icon" id="shop-icon">
             <span id="shop-text">Shop</span>
@@ -76,18 +98,18 @@
 
                 <div class="settings-content">
                     <div class="setting-item">
+                        <span>Eingeloggt als <span id="auth-user-email"></span></span>
+                        <button id="auth-signout-btn" class="delete-btn">Logout</button>
+                    </div>
+
+                    <div class="setting-item">
+                        <span>Bestenliste</span>
+                        <button id="leaderboard-toggle" class="setting-item-btn">Anzeigen</button>
+                    </div>
+
+                    <div class="setting-item">
                         <span>Spielstand löschen</span>
                         <button id="reset-game" class="delete-btn">Reset</button>
-                    </div>
-
-                    <div class="setting-item">
-                        <span>Save-Code erstellen</span>
-                        <button id="export-save" class="setting-item-btn">Code bekommen</button>
-                    </div>
-
-                    <div class="setting-item">
-                        <span>Save-Code laden</span>
-                        <button id="import-save" class="setting-item-btn">Code eingeben</button>
                     </div>
                 </div>
             </div>
@@ -135,33 +157,17 @@
             </div>
         </div>
 
-        <div id="save-popup" class="overlay">
+        <div id="leaderboard-overlay" class="overlay">
             <div class="settings-modal">
                 <div class="settings-header">
-                    <h2>Save-Code</h2>
-                    <button id="close-save">
+                    <h2>Bestenliste</h2>
+                    <button id="close-leaderboard">
                         <img src="/img/Close.png" class="btn-icon">
                     </button>
                 </div>
 
                 <div class="settings-content">
-                    <textarea id="save-code-field" readonly></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div id="load-popup" class="overlay">
-            <div class="settings-modal">
-                <div class="settings-header">
-                    <h2>Save-Code</h2>
-                    <button id="close-load">
-                        <img src="/img/Close.png" class="btn-icon">
-                    </button>
-                </div>
-                
-                <div class="settings-content">
-                    <textarea id="load-code-field" placeholder="Code hier einfügen..."></textarea>
-                    <button id="confirm-load" class="setting-item-btn">Laden</button>
+                    <ol id="leaderboard-list"></ol>
                 </div>
             </div>
         </div>

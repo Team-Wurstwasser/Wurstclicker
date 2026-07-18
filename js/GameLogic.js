@@ -13,6 +13,7 @@ const state = {
     lifetimeRebirthPoints: new Decimal(0),
     isWurstMode: false,
     lastUpdate: Date.now(),
+    lastSave: Date.now(),
     created: new Date()
 };
 
@@ -34,15 +35,6 @@ const elements = {
     settingsOverlay: document.getElementById('settings-overlay'),
     closeSettings: document.getElementById('close-settings'),
     resetBtn: document.getElementById('reset-game'),
-    exportBtn: document.getElementById('export-save'),
-    importBtn: document.getElementById('import-save'),
-    savePopup: document.getElementById('save-popup'),
-    loadPopup: document.getElementById('load-popup'),
-    saveCodeField: document.getElementById('save-code-field'),
-    loadCodeField: document.getElementById('load-code-field'),
-    confirmLoadBtn: document.getElementById('confirm-load'),
-    closeSave: document.getElementById('close-save'),
-    closeLoad: document.getElementById('close-load'),
     rebirthInfo: document.getElementById('rebirth-info'),
     rebirthBtn: document.getElementById('rebirth-btn'),
     rebirthTreeOverlay: document.getElementById('rebirth-tree-overlay'),
@@ -439,44 +431,19 @@ elements.closeRebirthTree.addEventListener('click', () => hideOverlay(elements.r
 elements.settingsBtn.addEventListener('click', () => showOverlay(elements.settingsOverlay));
 elements.closeSettings.addEventListener('click', () => hideOverlay(elements.settingsOverlay));
 
-elements.exportBtn.addEventListener('click', () => {
-    elements.saveCodeField.value = btoa(JSON.stringify(getSaveData()));
-    showOverlay(elements.savePopup);
-});
-
-elements.importBtn.addEventListener('click', () => showOverlay(elements.loadPopup));
-
-elements.confirmLoadBtn.addEventListener('click', () => {
-    const code = elements.loadCodeField.value.trim();
-    if (!code) return;
-    try {
-        const data = JSON.parse(atob(code));
-        applySaveData(data);
-        saveGame();
-        hideOverlay(elements.loadPopup);
-        hideOverlay(elements.settingsOverlay);
-        alert("Spielstand geladen!");
-    } catch (e) {
-        alert("Ungültiger Code!");
-    }
-});
-
 elements.resetBtn.addEventListener('click', () => {
     if (confirm("Wirklich alles löschen? Fortschritt geht verloren!")) {
         isResetting = true;
-        localStorage.removeItem('kekslefant_save');
-        location.reload();
+        (async () => {
+            if (currentUser) {
+                await supabaseClient.from('game_saves').delete().eq('user_id', currentUser.id);
+            }
+            location.reload();
+        })();
     }
 });
 
 elements.rebirthBtn.addEventListener('click', performRebirth);
-
-[elements.closeSave, elements.closeLoad].forEach(btn => {
-    btn.addEventListener('click', () => {
-        hideOverlay(elements.savePopup);
-        hideOverlay(elements.loadPopup);
-    });
-});
 
 elements.closeUpgradePop.addEventListener('click', () => hideOverlay(elements.upgradePopup));
 elements.confirmUpgradeBuy.addEventListener('click', () => {
@@ -514,5 +481,7 @@ setInterval(saveGame, 30000);
 window.addEventListener('beforeunload', saveGame);
 
 initAll();
-loadGame();
-updateUI();
+initAuth().then(() => {
+    loadGame();
+    updateUI();
+});

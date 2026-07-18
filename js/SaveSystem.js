@@ -6,7 +6,7 @@ function getSaveData() {
             totalRebirths: state.totalRebirths,
             lifetimeCookies: state.lifetimeCookies,
             lifetimeRebirthPoints: state.lifetimeRebirthPoints,
-            created: state.created.getTime(),
+            created: state.created.getTime()
         },
         factories: Object.keys(factoryData).reduce((all, key) => {
             if (factoryData[key]) {
@@ -81,21 +81,121 @@ function applySaveData(data) {
             });
         }
         
-            visibleupgrades.clear();
-            if (data.upgrades?.visible) {
-                data.upgrades.visible.forEach(key => {
-                    if (upgradeData[key] && !upgradeData[key].bought) {
-                        visibleupgrades.add(key);
-                    }
-                });
+        visibleupgrades.clear();
+        if (data.upgrades?.visible) {
+            data.upgrades.visible.forEach(key => {
+                if (upgradeData[key] && !upgradeData[key].bought) {
+                    visibleupgrades.add(key);
+                }
+            });
         }
     } catch (e) {
         console.error("Fehler beim Laden des Spielstands:", e);
     }
 }
 
+function saveGameToCloud() {
+    if (!currentUser) return;
+
+    supabaseClient
+        .from('game_saves')
+        .select('save_data, updated_at')
+        .eq('user_id', currentUser.id)
+        .maybeSingle()
+        .then(result => {
+            const existing = result.data;
+            const fetchError = result.error;
+
+            if (fetchError) {
+                console.error("Konnte bestehenden Spielstand nicht prüfen:", fetchError.message);
+                return;
+            }
+
+            if (existing?.updated_at) {
+                const remoteTime = new Date(existing.updated_at).getTime();
+
+                if (state.lastSave && remoteTime > state.lastSave) {
+                    state.lastSave = remoteTime;
+                    return;
+                }
+            }
+
+            const payload = getSaveData();
+
+            return supabaseClient
+                .from('game_saves')
+                .upsert({
+                    user_id: currentUser.id,
+                    save_data: payload
+                })
+                .select('updated_at')
+                .single()
+                .then(saveResult => {
+                    const saveError = saveResult.error;
+                    const savedData = saveResult.data;
+
+                    if (saveError) {
+                        console.error("Cloud-Save fehlgeschlagen:", saveError.message);
+                        return;
+                    }
+
+                    if (savedData?.updated_at) {
+                        state.lastSave = new Date(savedData.updated_at).getTime();
+                    }
+
+                    return supabaseClient
+                        .from('leaderboard')
+                        .select('best_score')
+                        .eq('user_id', currentUser.id)
+                        .maybeSingle();
+                }).then(boardResult => {
+                    if (!boardResult) return;
+
+                    const existingBoard = boardResult.data;
+                    const boardfetchError = boardResult.error;
+
+                    if (boardfetchError) {
+                        console.error("Konnte bestehenden Bestenlisten-Eintrag nicht prüfen:", boardfetchError.message);
+                    } else {
+                        const existingScore = existingBoard?.best_score ? new Decimal(existingBoard.best_score) : new Decimal(0);
+
+                        if (state.lifetimeCookies.gt(existingScore)) {
+                            supabaseClient.from('leaderboard').upsert({
+                                user_id: currentUser.id,
+                                best_score: state.lifetimeCookies.toString()
+                            });
+                        }
+                    }
+                });
+        });
+}
+
+function loadGameFromCloud() {
+    if (!currentUser) return;
+
+    supabaseClient
+        .from('game_saves')
+        .select('save_data, updated_at')
+        .eq('user_id', currentUser.id)
+        .maybeSingle()
+        .then(result => {
+            const data = result.data;
+            const error = result.error;
+
+            if (error) {
+                console.error("Cloud-Save konnte nicht geladen werden:", error.message);
+                return;
+            }
+
+            if (data && data.save_data) {
+                applySaveData(data.save_data);
+                state.lastSave = data.updated_at ? new Date(data.updated_at).getTime() : Date.now();
+            }
+        });
+}
+
 function saveGame() {
-    if (isResetting) return;
+    if (isResetting || !currentUser) return;
 
     const hasNoCookies = state.lifetimeCookies.eq(0);
     const hasNoFactory = Object.values(factoryData).every(factory => factory.amount.eq(0));
@@ -105,16 +205,10 @@ function saveGame() {
         return;
     }
 
-    localStorage.setItem('kekslefant_save', JSON.stringify(getSaveData()));
+    saveGameToCloud();
 }
 
 function loadGame() {
-    try {
-        const savedData = localStorage.getItem('kekslefant_save');
-        if (savedData) {
-            applySaveData(JSON.parse(savedData));
-        }
-    } catch (e) {
-        console.error("LocalStorage konnte nicht gelesen werden:", e);
-    }
+    if (!currentUser) return;
+    loadGameFromCloud();
 }

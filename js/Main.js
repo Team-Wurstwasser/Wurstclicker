@@ -15,6 +15,8 @@ async function initGame() {
         await loadScript('js/Config.js');
         await loadScript('js/SaveSystem.js');
         await loadScript('js/InitMethods.js');
+        await loadScript('js/Auth.js');
+        await loadScript('js/Leaderboard.js');
         await loadScript('js/GameLogic.js');
         
     } catch (e) {
