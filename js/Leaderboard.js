@@ -9,7 +9,7 @@ async function loadLeaderboard() {
     if (!leaderboardElements.list) return;
 
     const { data, error } = await supabaseClient
-        .from('leaderboard') 
+        .from('v_leaderboard') 
         .select('username, best_score')
         .order('best_score', { ascending: false })
         .limit(20);
