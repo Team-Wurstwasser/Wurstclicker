@@ -1,8 +1,6 @@
 let currentUser = null;
 let lastAuthCheck = Date.now();
 let currentMode = 'login';
-const MAX_USERNAME_LENGTH = 15;
-const MIN_USERNAME_LENGTH = 3;
 
 const authElements = {
     screen: document.getElementById('auth-screen'),
@@ -121,8 +119,8 @@ function signUp() {
         return;
     }
 
-    if (username.length < MIN_USERNAME_LENGTH || username.length > MAX_USERNAME_LENGTH) {
-        setAuthError(`Der Username muss zwischen ${MIN_USERNAME_LENGTH} und ${MAX_USERNAME_LENGTH} Zeichen lang sein.`);
+    if (username.length < 3 || username.length > 15) {
+        setAuthError('Der Username muss zwischen 3 und 15 Zeichen lang sein.');
         return;
     }
 
@@ -215,8 +213,8 @@ function updateUsername() {
         return;
     }
 
-    if (newUsername.length < MIN_USERNAME_LENGTH || newUsername.length > MAX_USERNAME_LENGTH) {
-        setAccountMessage(`Der Username muss zwischen ${MIN_USERNAME_LENGTH} und ${MAX_USERNAME_LENGTH} Zeichen lang sein.`);
+    if (newUsername.length < 3 || newUsername.length > 15) {
+        setAccountMessage('Der Username muss zwischen 3 und 15 Zeichen lang sein.');
         return;
     }
 
