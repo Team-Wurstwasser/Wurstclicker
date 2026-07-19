@@ -7,10 +7,14 @@ const MIN_USERNAME_LENGTH = 3;
 const authElements = {
     screen: document.getElementById('auth-screen'),
     errorText: document.getElementById('auth-error'),
-    emailInput: document.getElementById('auth-email'),
-    passwordInput: document.getElementById('auth-password'),
-    usernameInput: document.getElementById('auth-username'),
-    actionBtn: document.getElementById('auth-action-btn'),
+    loginForm: document.getElementById('auth-login-form'),
+    registerForm: document.getElementById('auth-register-form'),
+    loginEmailInput: document.getElementById('auth-login-email'),
+    loginPasswordInput: document.getElementById('auth-login-password'),
+    registerEmailInput: document.getElementById('auth-register-email'),
+    registerPasswordInput: document.getElementById('auth-register-password'),
+    registerPasswordConfirmInput: document.getElementById('auth-register-password-confirm'),
+    registerUsernameInput: document.getElementById('auth-register-username'),
     signOutBtn: document.getElementById('auth-signout-btn'),
     userLabel: document.getElementById('auth-user-email'),
     tabLogin: document.getElementById('tab-login'),
@@ -47,18 +51,25 @@ function setAuthError(msg) {
 function switchMode(mode) {
     currentMode = mode;
     setAuthError('');
-    
+
     if (mode === 'login') {
         authElements.tabLogin.classList.add('active');
         authElements.tabRegister.classList.remove('active');
-        authElements.usernameInput.style.display = 'none';
-        authElements.actionBtn.textContent = 'Einloggen';
+        authElements.loginForm.style.display = 'block';
+        authElements.registerForm.style.display = 'none';
     } else {
         authElements.tabLogin.classList.remove('active');
         authElements.tabRegister.classList.add('active');
-        authElements.usernameInput.style.display = 'block';
-        authElements.actionBtn.textContent = 'Registrieren';
+        authElements.loginForm.style.display = 'none';
+        authElements.registerForm.style.display = 'block';
     }
+}
+
+function clearRegisterForm() {
+    if (authElements.registerEmailInput) authElements.registerEmailInput.value = '';
+    if (authElements.registerPasswordInput) authElements.registerPasswordInput.value = '';
+    if (authElements.registerPasswordConfirmInput) authElements.registerPasswordConfirmInput.value = '';
+    if (authElements.registerUsernameInput) authElements.registerUsernameInput.value = '';
 }
 
 function initAuth() {
@@ -99,17 +110,23 @@ function initAuth() {
 
 function signUp() {
     setAuthError('');
-    const email = authElements.emailInput.value.trim();
-    const password = authElements.passwordInput.value;
-    const username = authElements.usernameInput.value.trim();
+    const email = authElements.registerEmailInput.value.trim();
+    const password = authElements.registerPasswordInput.value;
+    const passwordConfirm = authElements.registerPasswordConfirmInput.value;
+    const username = authElements.registerUsernameInput.value.trim();
 
-    if (!email || !password || !username) {
-        setAuthError('Bitte E-Mail, Passwort und Username ausfüllen.');
+    if (!email || !password || !passwordConfirm || !username) {
+        setAuthError('Bitte alle Felder ausfüllen.');
         return;
     }
 
     if (username.length < MIN_USERNAME_LENGTH || username.length > MAX_USERNAME_LENGTH) {
         setAuthError(`Der Username muss zwischen ${MIN_USERNAME_LENGTH} und ${MAX_USERNAME_LENGTH} Zeichen lang sein.`);
+        return;
+    }
+
+    if (password !== passwordConfirm) {
+        setAuthError('Die Passwörter stimmen nicht überein.');
         return;
     }
 
@@ -130,6 +147,7 @@ function signUp() {
         }
 
         setAuthError('Registrierung erfolgreich! Du kannst dich jetzt einloggen.');
+        clearRegisterForm();
         switchMode('login');
     }).catch(() => {
         setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
@@ -138,8 +156,8 @@ function signUp() {
 
 function signIn() {
     setAuthError('');
-    const email = authElements.emailInput.value.trim();
-    const password = authElements.passwordInput.value;
+    const email = authElements.loginEmailInput.value.trim();
+    const password = authElements.loginPasswordInput.value;
 
     if (!email || !password) {
         setAuthError('Bitte E-Mail und Passwort eingeben.');
@@ -159,14 +177,6 @@ function signIn() {
         }).catch(() => {
             setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
         });
-}
-
-function handleAuthAction() {
-    if (currentMode === 'login') {
-        signIn();
-    } else {
-        signUp();
-    }
 }
 
 function signOutUser() {
@@ -327,5 +337,14 @@ window.addEventListener('focus', recheckAuthOnReturn);
 
 authElements.tabLogin?.addEventListener('click', () => switchMode('login'));
 authElements.tabRegister?.addEventListener('click', () => switchMode('register'));
-authElements.actionBtn?.addEventListener('click', handleAuthAction);
 authElements.signOutBtn?.addEventListener('click', signOutUser);
+
+authElements.loginForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    signIn();
+});
+
+authElements.registerForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    signUp();
+});

@@ -32,14 +32,23 @@
                     <button id="tab-register" class="auth-tab">Registrieren</button>
                 </div>
 
-                <input id="auth-email" type="email" placeholder="E-Mail" class="auth-input">
-                <input id="auth-password" type="password" placeholder="Passwort" class="auth-input">
-        
-                <input id="auth-username" type="text" placeholder="Username" class="auth-input" maxlength="20" style="display: none;">
-        
-                <div class="auth-btn-row">
-                    <button id="auth-action-btn" class="factory-buy-btn">Einloggen</button>
-                </div>
+                <form id="auth-login-form" class="auth-form">
+                    <input id="auth-login-email" name="email" type="email" placeholder="E-Mail" class="auth-input" autocomplete="username">
+                    <input id="auth-login-password" name="password" type="password" placeholder="Passwort" class="auth-input" autocomplete="current-password">
+                    <div class="auth-btn-row">
+                        <button type="submit" id="auth-login-btn" class="factory-buy-btn">Einloggen</button>
+                    </div>
+                </form>
+
+                <form id="auth-register-form" class="auth-form" style="display: none;">
+                    <input id="auth-register-username" name="username" type="text" placeholder="Username" class="auth-input" maxlength="20" autocomplete="username">
+                    <input id="auth-register-email" name="email" type="email" placeholder="E-Mail" class="auth-input" autocomplete="email">
+                    <input id="auth-register-password" name="new-password" type="password" placeholder="Passwort" class="auth-input" autocomplete="new-password">
+                    <input id="auth-register-password-confirm" name="new-password-confirm" type="password" placeholder="Passwort bestätigen" class="auth-input" autocomplete="new-password">
+                    <div class="auth-btn-row">
+                        <button type="submit" id="auth-register-btn" class="factory-buy-btn">Registrieren</button>
+                    </div>
+                </form>
 
                 <p id="auth-error"></p>
             </div>
@@ -208,8 +217,8 @@
 
                     <div class="account-block">
                         <span class="account-label">Passwort</span>
-                        <input id="account-password" type="password" class="auth-input" placeholder="Neues Passwort">
-                        <input id="account-password-confirm" type="password" class="auth-input" placeholder="Passwort bestätigen">
+                        <input id="account-password" type="password" class="auth-input" placeholder="Neues Passwort" autocomplete="new-password">
+                        <input id="account-password-confirm" type="password" class="auth-input" placeholder="Passwort bestätigen" autocomplete="new-password">
                         <button id="account-password-btn" class="factory-buy-btn account-action-btn">Passwort ändern</button>
                     </div>
 
