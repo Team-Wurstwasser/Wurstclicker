@@ -467,11 +467,87 @@ body {
 .setting-item:last-child { border-bottom: none; }
 .setting-item span { font-weight: 600; color: #3d2b1f; }
 
-#close-settings, #close-upgrade-pop, #close-rebirth-tree, #close-leaderboard {
+#close-settings, #close-upgrade-pop, #close-rebirth-tree, #close-leaderboard, #close-account {
     background: none;
     border: none;
     cursor: pointer;
     padding: 5px;
+}
+
+.settings-modal.leaderboard-modal {
+    width: 92vw;
+    max-width: 640px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.leaderboard-content {
+    overflow-y: auto;
+    flex: 1;
+}
+
+#leaderboard-list {
+    margin: 0;
+    padding: 0 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#leaderboard-list li {
+    color: #3d2b1f;
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 10px 12px;
+    background: rgba(61, 43, 31, 0.06);
+    border-radius: 10px;
+    border: 1px solid rgba(61, 43, 31, 0.12);
+}
+
+.account-content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.account-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(61, 43, 31, 0.1);
+}
+
+.account-block:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.account-label {
+    font-weight: 700;
+    color: #3d2b1f;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 0.5px;
+}
+
+.account-action-btn {
+    justify-content: center;
+    align-self: flex-start;
+    padding: 10px 18px;
+}
+
+#account-message {
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    color: #e74c3c;
+    min-height: 18px;
+}
+
+#account-message.success {
+    color: #2e7d32;
 }
 
 .settings-modal.rebirth-tree-modal {
@@ -727,6 +803,10 @@ body {
 
     .rebirth-tree-scroll {
         max-height: 72vh;
+    }
+
+    .settings-modal.leaderboard-modal {
+        max-height: 80vh;
     }
 
     .rebirth-panel {

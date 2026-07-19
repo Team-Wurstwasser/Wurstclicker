@@ -5,35 +5,34 @@ const leaderboardElements = {
     list: document.getElementById('leaderboard-list')
 };
 
-async function loadLeaderboard() {
-    if (!leaderboardElements.list) return;
-
-    const { data, error } = await supabaseClient
+function loadLeaderboard() {
+    supabaseClient
         .from('v_leaderboard') 
         .select('username, best_score')
         .order('best_score', { ascending: false })
-        .limit(20);
+        .limit(50)
+        .then(({ data, error }) => {
+            if (error) {
+                return;
+            }
 
-    if (error) {
-        return;
-    }
-
-    leaderboardElements.list.innerHTML = '';
-    data.forEach(entry => {
-        const li = document.createElement('li');
-        const scoreText = typeof formatNumber === 'function'
-            ? formatNumber(new Decimal(entry.best_score || 0))
-            : entry.best_score;
-        li.textContent = `${entry.username || 'Unbekannt'} – ${scoreText} Cookies`;
-        leaderboardElements.list.appendChild(li);
-    });
+            leaderboardElements.list.innerHTML = '';
+            data.forEach(entry => {
+                const li = document.createElement('li');
+                const scoreText = typeof formatNumber === 'function'
+                    ? formatNumber(new Decimal(entry.best_score || 0))
+                    : entry.best_score;
+                li.textContent = `${entry.username || 'Unbekannt'} – ${scoreText} Cookies`;
+                leaderboardElements.list.appendChild(li);
+            });
+        });
 }
 
-leaderboardElements.toggleBtn?.addEventListener('click', async () => {
-    await loadLeaderboard();
-    if (leaderboardElements.overlay) leaderboardElements.overlay.style.display = 'flex';
+leaderboardElements.toggleBtn?.addEventListener('click', () => {
+    loadLeaderboard();
+    showOverlay(leaderboardElements.overlay);
 });
 
 leaderboardElements.closeBtn?.addEventListener('click', () => {
-    if (leaderboardElements.overlay) leaderboardElements.overlay.style.display = 'none';
+    hideOverlay(leaderboardElements.overlay);
 });

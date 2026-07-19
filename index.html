@@ -35,7 +35,7 @@
                 <input id="auth-email" type="email" placeholder="E-Mail" class="auth-input">
                 <input id="auth-password" type="password" placeholder="Passwort" class="auth-input">
         
-                <input id="auth-username" type="text" placeholder="Username" class="auth-input" style="display: none;">
+                <input id="auth-username" type="text" placeholder="Username" class="auth-input" maxlength="20" style="display: none;">
         
                 <div class="auth-btn-row">
                     <button id="auth-action-btn" class="factory-buy-btn">Einloggen</button>
@@ -110,6 +110,11 @@
                     </div>
 
                     <div class="setting-item">
+                        <span>Konto</span>
+                        <button id="account-toggle" class="setting-item-btn">Verwalten</button>
+                    </div>
+
+                    <div class="setting-item">
                         <span>Bestenliste</span>
                         <button id="leaderboard-toggle" class="setting-item-btn">Anzeigen</button>
                     </div>
@@ -165,7 +170,7 @@
         </div>
 
         <div id="leaderboard-overlay" class="overlay">
-            <div class="settings-modal">
+            <div class="settings-modal leaderboard-modal">
                 <div class="settings-header">
                     <h2>Bestenliste</h2>
                     <button id="close-leaderboard">
@@ -173,8 +178,42 @@
                     </button>
                 </div>
 
-                <div class="settings-content">
+                <div class="settings-content leaderboard-content">
                     <ol id="leaderboard-list"></ol>
+                </div>
+            </div>
+        </div>
+
+        <div id="account-overlay" class="overlay">
+            <div class="settings-modal">
+                <div class="settings-header">
+                    <h2>Konto verwalten</h2>
+                    <button id="close-account">
+                        <img src="/img/Close.png" class="btn-icon">
+                    </button>
+                </div>
+
+                <div class="settings-content account-content">
+                    <div class="account-block">
+                        <span class="account-label">Username</span>
+                        <input id="account-username" type="text" class="auth-input" placeholder="Neuer Username" maxlength="20">
+                        <button id="account-username-btn" class="factory-buy-btn account-action-btn">Username ändern</button>
+                    </div>
+
+                    <div class="account-block">
+                        <span class="account-label">E-Mail</span>
+                        <input id="account-email" type="email" class="auth-input" placeholder="Neue E-Mail-Adresse">
+                        <button id="account-email-btn" class="factory-buy-btn account-action-btn">E-Mail ändern</button>
+                    </div>
+
+                    <div class="account-block">
+                        <span class="account-label">Passwort</span>
+                        <input id="account-password" type="password" class="auth-input" placeholder="Neues Passwort">
+                        <input id="account-password-confirm" type="password" class="auth-input" placeholder="Passwort bestätigen">
+                        <button id="account-password-btn" class="factory-buy-btn account-action-btn">Passwort ändern</button>
+                    </div>
+
+                    <p id="account-message"></p>
                 </div>
             </div>
         </div>
