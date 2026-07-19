@@ -142,33 +142,6 @@ function saveGameToCloud() {
         });
 }
 
-function updateLeaderboard() {
-    supabaseClient
-        .from('leaderboard')
-        .select('best_score')
-        .eq('user_id', currentUser.id)
-        .maybeSingle()
-        .then(boardResult => {
-            if (!boardResult) return;
-
-            const existingBoard = boardResult.data;
-            const boardfetchError = boardResult.error;
-
-            if (boardfetchError) {
-                return;
-            } else {
-                const existingScore = existingBoard?.best_score ? new Decimal(existingBoard.best_score) : new Decimal(0);
-
-                if (state.lifetimeCookies.gt(existingScore)) {
-                    supabaseClient.from('leaderboard').upsert({
-                        user_id: currentUser.id,
-                        best_score: state.lifetimeCookies.toString()
-                    });
-                }
-            }
-        });
-}
-
 function loadGameFromCloud() {
     if (!currentUser) return;
 
@@ -208,17 +181,6 @@ function saveGame() {
     }
 
     saveGameToCloud();
-}
-
-function saveAll() {
-    if (isResetting || !currentUser) return;
-
-    if (isSaveEmpty()) {
-        return;
-    }
-
-    saveGame();
-    updateLeaderboard();
 }
 
 
