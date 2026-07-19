@@ -192,12 +192,18 @@ function loadGame() {
 function resetGame() {
     if (confirm("Wirklich alles löschen? Fortschritt geht verloren!")) {
         isResetting = true;
-        (async () => {
-            if (currentUser) {
-                await supabaseClient.from('game_saves').delete().eq('user_id', currentUser.id);
-                await supabaseClient.from('leaderboard').delete().eq('user_id', currentUser.id);
-            }
+        
+        if (currentUser) {
+            Promise.all([
+                supabaseClient.from('game_saves').delete().eq('user_id', currentUser.id),
+                supabaseClient.from('leaderboard').delete().eq('user_id', currentUser.id)
+            ]).then((results) => {
+                location.reload();
+            }).catch(() => {
+                location.reload(); 
+            });
+        } else {
             location.reload();
-        })();
+        }
     }
 }
