@@ -432,15 +432,7 @@ elements.settingsBtn.addEventListener('click', () => showOverlay(elements.settin
 elements.closeSettings.addEventListener('click', () => hideOverlay(elements.settingsOverlay));
 
 elements.resetBtn.addEventListener('click', () => {
-    if (confirm("Wirklich alles löschen? Fortschritt geht verloren!")) {
-        isResetting = true;
-        (async () => {
-            if (currentUser) {
-                await supabaseClient.from('game_saves').delete().eq('user_id', currentUser.id);
-            }
-            location.reload();
-        })();
-    }
+    resetGame();
 });
 
 elements.rebirthBtn.addEventListener('click', performRebirth);

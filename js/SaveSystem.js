@@ -36,7 +36,7 @@ function applySaveData(data) {
         state.rebirthPoints = new Decimal(stats.rebirthPoints || 0);
         state.totalRebirths = new Decimal(stats.totalRebirths || 0);
         state.lifetimeCookies = new Decimal(stats.lifetimeCookies || stats.cookies || 0);
-        state.lifetimeRebirthPoints = new Decimal(stats.lifetimeRebirthPoints || stats.rebirthPoints || 0);  
+        state.lifetimeRebirthPoints = new Decimal(stats.lifetimeRebirthPoints || stats.rebirthPoints || 0);
         state.created = new Date(stats.created || Date.now());
 
         state.clickValue = new Decimal(1);
@@ -71,7 +71,7 @@ function applySaveData(data) {
         }
 
         for (const key in rebirthTreeData) {
-             if (rebirthTreeData[key]) rebirthTreeData[key].bought = false;
+            if (rebirthTreeData[key]) rebirthTreeData[key].bought = false;
         }
         if (data.rebirthTree?.bought) {
             data.rebirthTree.bought.forEach(key => {
@@ -80,7 +80,7 @@ function applySaveData(data) {
                 }
             });
         }
-        
+
         visibleupgrades.clear();
         if (data.upgrades?.visible) {
             data.upgrades.visible.forEach(key => {
@@ -187,4 +187,17 @@ function saveGame() {
 function loadGame() {
     if (!currentUser) return;
     loadGameFromCloud();
+}
+
+function resetGame() {
+    if (confirm("Wirklich alles löschen? Fortschritt geht verloren!")) {
+        isResetting = true;
+        (async () => {
+            if (currentUser) {
+                await supabaseClient.from('game_saves').delete().eq('user_id', currentUser.id);
+                await supabaseClient.from('leaderboard').delete().eq('user_id', currentUser.id);
+            }
+            location.reload();
+        })();
+    }
 }
