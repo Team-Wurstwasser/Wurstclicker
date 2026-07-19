@@ -655,16 +655,33 @@ body {
     
 }
 
+.auth-form {
+    flex-direction: column;
+    gap: 8px;
+}
+
 .auth-input {
     width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    border: 2px solid #e1d3b7;
+    border-radius: 8px;
+    background-color: #fffdf9;
+    font-size: 1rem;
+    color: #4a3b32;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 0; 
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #b58967;
+    box-shadow: 0 0 0 3px rgba(181, 137, 103, 0.15);
 }
 
 .auth-btn-row {
+    margin-top: 8px;
     display: flex;
-    gap: 8px;
+    justify-content: center;
 }
 
 .auth-btn-row .factory-buy-btn {

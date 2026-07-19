@@ -40,8 +40,8 @@
                     </div>
                 </form>
 
-                <form id="auth-register-form" class="auth-form" style="display: none;">
-                    <input id="auth-register-username" name="username" type="text" placeholder="Username" class="auth-input" maxlength="20" autocomplete="username">
+                <form id="auth-register-form" class="auth-form">
+                    <input id="auth-register-username" name="username" type="text" placeholder="Username" class="auth-input" maxlength="15" autocomplete="username">
                     <input id="auth-register-email" name="email" type="email" placeholder="E-Mail" class="auth-input" autocomplete="email">
                     <input id="auth-register-password" name="new-password" type="password" placeholder="Passwort" class="auth-input" autocomplete="new-password">
                     <input id="auth-register-password-confirm" name="new-password-confirm" type="password" placeholder="Passwort bestätigen" class="auth-input" autocomplete="new-password">
@@ -205,7 +205,7 @@
                 <div class="settings-content account-content">
                     <div class="account-block">
                         <span class="account-label">Username</span>
-                        <input id="account-username" type="text" class="auth-input" placeholder="Neuer Username" maxlength="20">
+                        <input id="account-username" type="text" class="auth-input" placeholder="Neuer Username" maxlength="15">
                         <button id="account-username-btn" class="factory-buy-btn account-action-btn">Username ändern</button>
                     </div>
 
@@ -216,9 +216,10 @@
                     </div>
 
                     <div class="account-block">
-                        <span class="account-label">Passwort</span>
+                        <span class="account-label">Passwort ändern</span>
+                        <input id="account-password-old" type="password" class="auth-input" placeholder="Aktuelles Passwort" autocomplete="current-password">
                         <input id="account-password" type="password" class="auth-input" placeholder="Neues Passwort" autocomplete="new-password">
-                        <input id="account-password-confirm" type="password" class="auth-input" placeholder="Passwort bestätigen" autocomplete="new-password">
+                        <input id="account-password-confirm" type="password" class="auth-input" placeholder="Neues Passwort bestätigen" autocomplete="new-password">
                         <button id="account-password-btn" class="factory-buy-btn account-action-btn">Passwort ändern</button>
                     </div>
 

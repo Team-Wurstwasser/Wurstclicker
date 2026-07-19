@@ -1,7 +1,7 @@
 let currentUser = null;
 let lastAuthCheck = Date.now();
 let currentMode = 'login';
-const MAX_USERNAME_LENGTH = 20;
+const MAX_USERNAME_LENGTH = 15;
 const MIN_USERNAME_LENGTH = 3;
 
 const authElements = {
@@ -30,18 +30,19 @@ const accountElements = {
     usernameBtn: document.getElementById('account-username-btn'),
     emailInput: document.getElementById('account-email'),
     emailBtn: document.getElementById('account-email-btn'),
+    passwordOldInput: document.getElementById('account-password-old'),
     passwordInput: document.getElementById('account-password'),
     passwordConfirmInput: document.getElementById('account-password-confirm'),
     passwordBtn: document.getElementById('account-password-btn')
 };
 
 function showAuthScreen() {
-    if (authElements.screen) authElements.screen.style.display = 'flex';
+    showOverlay(authElements.screen);
     switchMode('login');
 }
 
 function hideAuthScreen() {
-    if (authElements.screen) authElements.screen.style.display = 'none';
+    hideOverlay(authElements.screen);
 }
 
 function setAuthError(msg) {
@@ -55,21 +56,21 @@ function switchMode(mode) {
     if (mode === 'login') {
         authElements.tabLogin.classList.add('active');
         authElements.tabRegister.classList.remove('active');
-        authElements.loginForm.style.display = 'block';
-        authElements.registerForm.style.display = 'none';
+        hideOverlay(authElements.registerForm);
+        showOverlay(authElements.loginForm);
     } else {
         authElements.tabLogin.classList.remove('active');
         authElements.tabRegister.classList.add('active');
-        authElements.loginForm.style.display = 'none';
-        authElements.registerForm.style.display = 'block';
+        hideOverlay(authElements.loginForm);
+        showOverlay(authElements.registerForm);
     }
 }
 
 function clearRegisterForm() {
-    if (authElements.registerEmailInput) authElements.registerEmailInput.value = '';
-    if (authElements.registerPasswordInput) authElements.registerPasswordInput.value = '';
-    if (authElements.registerPasswordConfirmInput) authElements.registerPasswordConfirmInput.value = '';
-    if (authElements.registerUsernameInput) authElements.registerUsernameInput.value = '';
+    authElements.registerEmailInput.value = '';
+    authElements.registerPasswordInput.value = '';
+    authElements.registerPasswordConfirmInput.value = '';
+    authElements.registerUsernameInput.value = '';
 }
 
 function initAuth() {
@@ -172,8 +173,7 @@ function signIn() {
                 setAuthError('Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben.');
                 return;
             }
-
-            location.reload();
+            initAuth();
         }).catch(() => {
             setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
         });
@@ -190,21 +190,19 @@ function signOutUser() {
 }
 
 function setAccountMessage(msg, isSuccess) {
-    if (!accountElements.message) return;
     accountElements.message.textContent = msg || '';
     accountElements.message.classList.toggle('success', !!isSuccess);
 }
 
 function openAccountOverlay() {
     setAccountMessage('');
-    if (accountElements.usernameInput) {
-        accountElements.usernameInput.value = currentUser?.user_metadata?.display_name || '';
-    }
-    if (accountElements.emailInput) {
-        accountElements.emailInput.value = currentUser?.email || '';
-    }
-    if (accountElements.passwordInput) accountElements.passwordInput.value = '';
-    if (accountElements.passwordConfirmInput) accountElements.passwordConfirmInput.value = '';
+
+    accountElements.usernameInput.value = currentUser?.user_metadata?.display_name || '';
+    accountElements.emailInput.value = currentUser?.email || '';
+    accountElements.passwordOldInput.value = '';
+    accountElements.passwordInput.value = '';
+    accountElements.passwordConfirmInput.value = '';
+
     showOverlay(accountElements.overlay);
 }
 
@@ -270,39 +268,59 @@ function updateAccountEmail() {
 
 function updateAccountPassword() {
     setAccountMessage('');
+    const oldPassword = accountElements.passwordOldInput.value;
     const newPassword = accountElements.passwordInput.value;
     const confirmPassword = accountElements.passwordConfirmInput.value;
 
-    if (!newPassword || !confirmPassword) {
-        setAccountMessage('Bitte beide Passwortfelder ausfüllen.');
+    if (!oldPassword || !newPassword || !confirmPassword) {
+        setAccountMessage('Bitte alle Passwortfelder ausfüllen.');
         return;
     }
 
     if (newPassword !== confirmPassword) {
-        setAccountMessage('Die Passwörter stimmen nicht überein.');
+        setAccountMessage('Die neuen Passwörter stimmen nicht überein.');
         return;
     }
 
     if (newPassword.length < 6) {
-        setAccountMessage('Das Passwort muss mindestens 6 Zeichen lang sein.');
+        setAccountMessage('Das neue Passwort muss mindestens 6 Zeichen lang sein.');
         return;
     }
 
-    supabaseClient.auth.updateUser({
-        password: newPassword
-    }).then(result => {
-        const error = result.error;
+    if (!currentUser || !currentUser.email) {
+        setAccountMessage('Benutzer nicht gefunden. Bitte logge dich neu ein.');
+        return;
+    }
 
-        if (error) {
-            setAccountMessage('Passwort konnte nicht geändert werden.');
+    supabaseClient.auth.signInWithPassword({
+        email: currentUser.email,
+        password: oldPassword
+    }).then(reauthResult => {
+        if (reauthResult.error) {
+            setAccountMessage('Das aktuelle Passwort ist falsch.');
             return;
         }
 
-        accountElements.passwordInput.value = '';
-        accountElements.passwordConfirmInput.value = '';
-        setAccountMessage('Passwort erfolgreich geändert.', true);
+        supabaseClient.auth.updateUser({
+            password: newPassword
+        }).then(result => {
+            const error = result.error;
+
+            if (error) {
+                setAccountMessage('Passwort konnte nicht geändert werden.');
+                return;
+            }
+
+            accountElements.passwordOldInput.value = '';
+            accountElements.passwordInput.value = '';
+            accountElements.passwordConfirmInput.value = '';
+            setAccountMessage('Passwort erfolgreich geändert.', true);
+        }).catch(() => {
+            setAccountMessage('Ein unerwarteter Fehler beim Aktualisieren ist aufgetreten.');
+        });
+
     }).catch(() => {
-        setAccountMessage('Ein unerwarteter Fehler ist aufgetreten.');
+        setAccountMessage('Ein unerwarteter Fehler bei der Überprüfung ist aufgetreten.');
     });
 }
 
