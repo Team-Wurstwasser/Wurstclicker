@@ -517,6 +517,33 @@ body {
 .rebirth-tree-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); border-radius: 999px; }
 .rebirth-tree-scroll::-webkit-scrollbar-thumb { background: #b58a3a; border-radius: 999px; }
 
+.auth-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ccc;
+}
+
+.auth-tab {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #666;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.auth-tab.active {
+    color: #ff9900;
+    border-bottom: 3px solid #ff9900;
+}
+
+.auth-tab:focus {
+    outline: none;
+}
+
 #auth-screen {
     display: flex;
     position: fixed;
@@ -549,6 +576,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    
 }
 
 .auth-input {
@@ -568,10 +596,15 @@ body {
 }
 
 #auth-error {
-    color: #c0392b;
-    font-size: 0.85em;
-    min-height: 1em;
     margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 14px;
+    color: #e74c3c;
+}
+
+#auth-error:not(:empty) {
+    margin-top: 10px;
 }
 
 #up-pop-icon {

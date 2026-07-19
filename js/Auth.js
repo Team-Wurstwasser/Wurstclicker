@@ -1,5 +1,6 @@
 let currentUser = null;
 let lastAuthCheck = Date.now();
+let currentMode = 'login';
 
 const authElements = {
     screen: document.getElementById('auth-screen'),
@@ -7,14 +8,16 @@ const authElements = {
     emailInput: document.getElementById('auth-email'),
     passwordInput: document.getElementById('auth-password'),
     usernameInput: document.getElementById('auth-username'),
-    signUpBtn: document.getElementById('auth-signup-btn'),
-    signInBtn: document.getElementById('auth-signin-btn'),
+    actionBtn: document.getElementById('auth-action-btn'),
     signOutBtn: document.getElementById('auth-signout-btn'),
-    userLabel: document.getElementById('auth-user-email')
+    userLabel: document.getElementById('auth-user-email'),
+    tabLogin: document.getElementById('tab-login'),
+    tabRegister: document.getElementById('tab-register')
 };
 
 function showAuthScreen() {
     if (authElements.screen) authElements.screen.style.display = 'flex';
+    switchMode('login');
 }
 
 function hideAuthScreen() {
@@ -23,6 +26,23 @@ function hideAuthScreen() {
 
 function setAuthError(msg) {
     if (authElements.errorText) authElements.errorText.textContent = msg || '';
+}
+
+function switchMode(mode) {
+    currentMode = mode;
+    setAuthError('');
+    
+    if (mode === 'login') {
+        authElements.tabLogin.classList.add('active');
+        authElements.tabRegister.classList.remove('active');
+        authElements.usernameInput.style.display = 'none';
+        authElements.actionBtn.textContent = 'Einloggen';
+    } else {
+        authElements.tabLogin.classList.remove('active');
+        authElements.tabRegister.classList.add('active');
+        authElements.usernameInput.style.display = 'block';
+        authElements.actionBtn.textContent = 'Registrieren';
+    }
 }
 
 function initAuth() {
@@ -88,7 +108,8 @@ function signUp() {
             return;
         }
 
-        setAuthError('Registrierung erfolgreich!');
+        setAuthError('Registrierung erfolgreich! Du kannst dich jetzt einloggen.');
+        switchMode('login');
     }).catch(() => {
         setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
     });
@@ -117,6 +138,14 @@ function signIn() {
         }).catch(() => {
             setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
         });
+}
+
+function handleAuthAction() {
+    if (currentMode === 'login') {
+        signIn();
+    } else {
+        signUp();
+    }
 }
 
 function signOutUser() {
@@ -152,6 +181,7 @@ async function recheckAuthOnReturn() {
 document.addEventListener('visibilitychange', recheckAuthOnReturn);
 window.addEventListener('focus', recheckAuthOnReturn);
 
-authElements.signUpBtn?.addEventListener('click', signUp);
-authElements.signInBtn?.addEventListener('click', signIn);
+authElements.tabLogin?.addEventListener('click', () => switchMode('login'));
+authElements.tabRegister?.addEventListener('click', () => switchMode('register'));
+authElements.actionBtn?.addEventListener('click', handleAuthAction);
 authElements.signOutBtn?.addEventListener('click', signOutUser);
