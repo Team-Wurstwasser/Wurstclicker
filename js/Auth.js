@@ -1,5 +1,5 @@
 let currentUser = null;
-let currentUsername = null;
+let lastAuthCheck = Date.now();
 
 const authElements = {
     screen: document.getElementById('auth-screen'),
@@ -29,18 +29,32 @@ function initAuth() {
     return supabaseClient.auth.getSession()
         .then(result => {
             const session = result.data?.session;
-            currentUser = session?.user || null;
 
-            if (currentUser) {
-                currentUsername = currentUser.user_metadata?.display_name || null;
-                
-                hideAuthScreen();
-                if (authElements.userLabel) {
-                    authElements.userLabel.textContent = currentUsername || currentUser.email;
-                }
-            } else {
+            if (!session) {
+                currentUser = null;
                 showAuthScreen();
+                return;
             }
+
+            return supabaseClient.auth.getUser()
+                .then(userResult => {
+                    const user = userResult.data?.user;
+                    const userError = userResult.error;
+
+                    if (userError || !user) {
+                        currentUser = null;
+                        return supabaseClient.auth.signOut().finally(() => {
+                            showAuthScreen();
+                        });
+                    }
+
+                    currentUser = user;
+
+                    hideAuthScreen();
+                    if (authElements.userLabel) {
+                        authElements.userLabel.textContent = user.user_metadata?.display_name || user.email;
+                    }
+                });
         })
         .catch(() => {
             showAuthScreen();
@@ -114,6 +128,29 @@ function signOutUser() {
             location.reload(); 
         });
 }
+
+async function recheckAuthOnReturn() {
+    if (document.visibilityState !== 'visible') return;
+    if (!currentUser) return;
+
+    const now = Date.now();
+    if (now - lastAuthCheck < 30000) return;
+    lastAuthCheck = now;
+
+    const { data, error } = await supabaseClient.auth.getUser();
+
+    if (error || !data?.user) {
+        currentUser = null;
+        try {
+            await supabaseClient.auth.signOut();
+        } catch (e) {
+        }
+        showAuthScreen();
+    }
+}
+
+document.addEventListener('visibilitychange', recheckAuthOnReturn);
+window.addEventListener('focus', recheckAuthOnReturn);
 
 authElements.signUpBtn?.addEventListener('click', signUp);
 authElements.signInBtn?.addEventListener('click', signIn);
