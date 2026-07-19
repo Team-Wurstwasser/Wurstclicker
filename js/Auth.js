@@ -145,9 +145,8 @@ function signUp() {
             return;
         }
 
-        setAuthError('Registrierung erfolgreich! Du kannst dich jetzt einloggen.');
+        setAuthError('Bitte verifiziere deine E-Mail, um die Registrierung abzuschließen.');
         clearRegisterForm();
-        switchMode('login');
     }).catch(() => {
         setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
     });
@@ -258,7 +257,7 @@ function updateAccountEmail() {
             return;
         }
 
-        setAccountMessage('Bestätigungslink wurde an die neue E-Mail-Adresse gesendet.', true);
+        setAccountMessage('Bestätigungslinks wurde an die alte und neue E-Mail-Adresse gesendet.', true);
     }).catch(() => {
         setAccountMessage('Ein unerwarteter Fehler ist aufgetreten.');
     });
