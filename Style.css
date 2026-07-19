@@ -311,6 +311,7 @@ body {
 }
 
 .factory-buy-btn, .setting-item-btn, .delete-btn {
+    flex-shrink: 0;
     position: relative;
     padding: 10px;
     border: none;
