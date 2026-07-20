@@ -177,6 +177,7 @@ function signIn() {
 }
 
 function signOutUser() {
+    saveGame();
     supabaseClient.auth.signOut()
         .then(() => {
             location.reload();
