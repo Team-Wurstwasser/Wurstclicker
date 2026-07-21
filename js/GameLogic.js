@@ -204,7 +204,7 @@
         return upg.desc;
     }
 
-    App.performRebirth = function() {
+    function performRebirth() {
         const points = App.getRebirthPoints();
 
         if (!confirm(`Wirklich Rebirth ausführen? Du erhältst +${App.formatNumber(points)} Rebirth-Punkte und setzt den normalen Fortschritt zurück.`)) {
@@ -465,7 +465,7 @@
         App.resetGame();
     });
 
-    App.elements.rebirthBtn.addEventListener('click', App.performRebirth);
+    App.elements.rebirthBtn.addEventListener('click', performRebirth);
 
     App.elements.closeUpgradePop.addEventListener('click', () => hideOverlay(App.elements.upgradePopup));
     App.elements.confirmUpgradeBuy.addEventListener('click', () => {
