@@ -1,7 +1,7 @@
 (function(App) {
     'use strict';
 
-    App.getSaveData = function() {
+    function getSaveData() {
         const currentState = App.getState();
         return {
             stats: {
@@ -30,7 +30,7 @@
         };
     };
 
-    App.applySaveData = function(data) {
+    function applySaveData(data) {
         if (!data) return;
 
         try {
@@ -89,7 +89,7 @@
         }
     };
 
-    App.saveGameToCloud = function() {
+    function saveGameToCloud() {
         App.supabaseClient
             .from('game_saves')
             .select('save_data, updated_at')
@@ -112,7 +112,7 @@
                     }
                 }
 
-                const payload = App.getSaveData();
+                const payload = getSaveData();
 
                 return App.supabaseClient
                     .from('game_saves')
@@ -137,7 +137,7 @@
             });
     }
 
-    App.loadGameFromCloud = function() {
+    function loadGameFromCloud() {
         App.supabaseClient
             .from('game_saves')
             .select('save_data, updated_at')
@@ -151,7 +151,7 @@
                     return;
                 }
 
-                App.applySaveData(data.save_data);
+                applySaveData(data.save_data);
 
                 if (data.updated_at) {
                     App.setLastSave(new Date(data.updated_at).getTime());
@@ -161,7 +161,7 @@
             });
     };
 
-    App.isSaveEmpty = function() {
+    function isSaveEmpty() {
         const currentState = App.getState();
         const hasNoCookies = currentState.lifetimeCookies.eq(0);
         const hasNoFactory = Object.values(App.factoryData).every(factory => factory.amount.eq(0));
@@ -173,16 +173,16 @@
     App.saveGame = function() {
         if (App.isResetting() || !App.getCurrentUser()) return;
 
-        if (App.isSaveEmpty()) {
+        if (isSaveEmpty()) {
             return;
         }
 
-        App.saveGameToCloud();
+        saveGameToCloud();
     }
 
     App.loadGame = function() {
         if (!App.getCurrentUser()) return;
-        App.loadGameFromCloud();
+        loadGameFromCloud();
     };
 
     App.resetGame = function() {
