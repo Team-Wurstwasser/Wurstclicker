@@ -8,21 +8,26 @@
         list: document.getElementById('leaderboard-list')
     };
 
-    function loadLeaderboard() {
+function loadLeaderboard() {
         supabaseClient
             .from('v_leaderboard')
             .select('username, best_score')
-            .order('best_score', { ascending: false })
-            .limit(50)
             .then(({ data, error }) => {
-                if (error) {
+                if (error || !data) {
                     return;
                 }
 
+                const sortedData = data.map(entry => ({
+                    username: entry.username,
+                    scoreDecimal: new Decimal(entry.best_score || 0)
+                }))
+                .sort((a, b) => b.scoreDecimal.comparedTo(a.scoreDecimal))
+                .slice(0, 50);
+
                 leaderboardElements.list.innerHTML = '';
-                data.forEach(entry => {
+                sortedData.forEach(entry => {
                     const li = document.createElement('li');
-                    const scoreText = App.formatNumber(new Decimal(entry.best_score || 0));
+                    const scoreText = App.formatNumber(entry.scoreDecimal);
                     li.textContent = `${entry.username || 'Unbekannt'} – ${scoreText} Cookies`;
                     leaderboardElements.list.appendChild(li);
                 });
