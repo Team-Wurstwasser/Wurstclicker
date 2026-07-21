@@ -1,8 +1,6 @@
 (function(App) {
     'use strict';
 
-    App.supabaseClient = supabaseClient;
-
     let currentUser = null;
     let lastAuthCheck = Date.now();
     let currentMode = 'login';
@@ -46,12 +44,8 @@ function showAuthScreen() {
     switchMode('login');
 }
 
-function hideAuthScreen() {
-    App.hideOverlay(authElements.screen);
-}
-
 function setAuthError(msg) {
-    if (authElements.errorText) authElements.errorText.textContent = msg || '';
+    authElements.errorText.textContent = msg || '';
 }
 
 function switchMode(mode) {
@@ -78,7 +72,7 @@ function clearRegisterForm() {
     authElements.registerUsernameInput.value = '';
 }
 
-function initAuth() {
+App.initAuth = function() {
     return supabaseClient.auth.getSession()
         .then(result => {
             const session = result.data?.session;
@@ -103,10 +97,8 @@ function initAuth() {
 
                     currentUser = user;
 
-                    hideAuthScreen();
-                    if (authElements.userLabel) {
-                        authElements.userLabel.textContent = user.user_metadata?.display_name || user.email;
-                    }
+                    App.hideOverlay(authElements.screen);
+                    authElements.userLabel.textContent = user.user_metadata?.display_name || user.email;
                 });
         })
         .catch(() => {
@@ -177,7 +169,7 @@ function signIn() {
                 setAuthError('Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben.');
                 return;
             }
-            initAuth();
+            App.initAuth();
         }).catch(() => {
             setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
         });
@@ -371,7 +363,5 @@ authElements.registerForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     signUp();
 });
-
-    App.initAuth = initAuth;
 
 })(window.GameApp = window.GameApp || {});

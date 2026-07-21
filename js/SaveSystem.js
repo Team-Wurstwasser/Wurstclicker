@@ -90,7 +90,7 @@
     };
 
     function saveGameToCloud() {
-        App.supabaseClient
+        supabaseClient
             .from('game_saves')
             .select('save_data, updated_at')
             .eq('user_id', App.getCurrentUser().id)
@@ -114,7 +114,7 @@
 
                 const payload = getSaveData();
 
-                return App.supabaseClient
+                return supabaseClient
                     .from('game_saves')
                     .upsert({
                         user_id: App.getCurrentUser().id,
@@ -138,7 +138,7 @@
     }
 
     function loadGameFromCloud() {
-        App.supabaseClient
+        supabaseClient
             .from('game_saves')
             .select('save_data, updated_at')
             .eq('user_id', App.getCurrentUser().id)
@@ -191,8 +191,8 @@
         
             if (App.getCurrentUser()) {
                 Promise.all([
-                    App.supabaseClient.from('game_saves').delete().eq('user_id', App.getCurrentUser().id),
-                    App.supabaseClient.from('leaderboard').delete().eq('user_id', App.getCurrentUser().id)
+                    supabaseClient.from('game_saves').delete().eq('user_id', App.getCurrentUser().id),
+                    supabaseClient.from('leaderboard').delete().eq('user_id', App.getCurrentUser().id)
                 ]).then((results) => {
                     location.reload();
                 }).catch(() => {

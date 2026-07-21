@@ -9,7 +9,7 @@
     };
 
     function loadLeaderboard() {
-        App.supabaseClient
+        supabaseClient
             .from('v_leaderboard')
             .select('username, best_score')
             .order('best_score', { ascending: false })
