@@ -238,7 +238,7 @@
         App.updateUI();
         App.saveGame();
         updateRebirthTree();
-        showOverlay(App.elements.rebirthTreeOverlay);
+        App.showOverlay(App.elements.rebirthTreeOverlay);
         centerRebirthTree();
     };
 
@@ -299,7 +299,7 @@
                     App.elements.upPopDesc.innerText = getUpgradeDescription(upg);
                     App.elements.upPopPriceBtn.innerText = App.formatNumber(upg.price);
                     updateUpgradePopupButton();
-                    showOverlay(App.elements.upgradePopup);
+                    App.showOverlay(App.elements.upgradePopup);
                 });
             }
         }
@@ -454,12 +454,12 @@
         App.elements.shopText.textContent = isOpen ? ' Schließen' : ' Shop';
     });
 
-    const showOverlay = (o) => o.style.display = 'flex';
-    const hideOverlay = (o) => o.style.display = 'none';
+    App.showOverlay = (o) => o.style.display = 'flex';
+    App.hideOverlay = (o) => o.style.display = 'none';
 
-    App.elements.closeRebirthTree.addEventListener('click', () => hideOverlay(App.elements.rebirthTreeOverlay));
-    App.elements.settingsBtn.addEventListener('click', () => showOverlay(App.elements.settingsOverlay));
-    App.elements.closeSettings.addEventListener('click', () => hideOverlay(App.elements.settingsOverlay));
+    App.elements.closeRebirthTree.addEventListener('click', () => App.hideOverlay(App.elements.rebirthTreeOverlay));
+    App.elements.settingsBtn.addEventListener('click', () => App.showOverlay(App.elements.settingsOverlay));
+    App.elements.closeSettings.addEventListener('click', () => App.hideOverlay(App.elements.settingsOverlay));
 
     App.elements.resetBtn.addEventListener('click', () => {
         App.resetGame();
@@ -467,11 +467,11 @@
 
     App.elements.rebirthBtn.addEventListener('click', performRebirth);
 
-    App.elements.closeUpgradePop.addEventListener('click', () => hideOverlay(App.elements.upgradePopup));
+    App.elements.closeUpgradePop.addEventListener('click', () => App.hideOverlay(App.elements.upgradePopup));
     App.elements.confirmUpgradeBuy.addEventListener('click', () => {
         if (currentUpgradeToBuy && state.cookies.gte(upgradeData[currentUpgradeToBuy].price)) {
             App.applyUpgrade(currentUpgradeToBuy);
-            hideOverlay(App.elements.upgradePopup);
+            App.hideOverlay(App.elements.upgradePopup);
             currentUpgradeToBuy = null;
         }
     });

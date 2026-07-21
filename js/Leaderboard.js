@@ -1,9 +1,6 @@
 (function(App) {
     'use strict';
 
-    const showOverlay = (o) => o.style.display = 'flex';
-    const hideOverlay = (o) => o.style.display = 'none';
-
     const leaderboardElements = {
         toggleBtn: document.getElementById('leaderboard-toggle'),
         overlay: document.getElementById('leaderboard-overlay'),
@@ -34,11 +31,11 @@
 
     leaderboardElements.toggleBtn?.addEventListener('click', () => {
         loadLeaderboard();
-        showOverlay(leaderboardElements.overlay);
+        App.showOverlay(leaderboardElements.overlay);
     });
 
     leaderboardElements.closeBtn?.addEventListener('click', () => {
-        hideOverlay(leaderboardElements.overlay);
+        App.hideOverlay(leaderboardElements.overlay);
     });
 
 })(window.GameApp = window.GameApp || {});

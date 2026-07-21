@@ -7,9 +7,6 @@
     let lastAuthCheck = Date.now();
     let currentMode = 'login';
 
-    const showOverlay = (o) => o.style.display = 'flex';
-    const hideOverlay = (o) => o.style.display = 'none';
-
     App.getCurrentUser = () => currentUser;
 
 const authElements = {
@@ -45,12 +42,12 @@ const accountElements = {
 };
 
 function showAuthScreen() {
-    showOverlay(authElements.screen);
+    App.showOverlay(authElements.screen);
     switchMode('login');
 }
 
 function hideAuthScreen() {
-    hideOverlay(authElements.screen);
+    App.hideOverlay(authElements.screen);
 }
 
 function setAuthError(msg) {
@@ -64,13 +61,13 @@ function switchMode(mode) {
     if (mode === 'login') {
         authElements.tabLogin.classList.add('active');
         authElements.tabRegister.classList.remove('active');
-        hideOverlay(authElements.registerForm);
-        showOverlay(authElements.loginForm);
+        App.hideOverlay(authElements.registerForm);
+        App.showOverlay(authElements.loginForm);
     } else {
         authElements.tabLogin.classList.remove('active');
         authElements.tabRegister.classList.add('active');
-        hideOverlay(authElements.loginForm);
-        showOverlay(authElements.registerForm);
+        App.hideOverlay(authElements.loginForm);
+        App.showOverlay(authElements.registerForm);
     }
 }
 
@@ -211,7 +208,7 @@ function openAccountOverlay() {
     accountElements.passwordInput.value = '';
     accountElements.passwordConfirmInput.value = '';
 
-    showOverlay(accountElements.overlay);
+    App.showOverlay(accountElements.overlay);
 }
 
 function updateUsername() {
@@ -333,7 +330,7 @@ function updateAccountPassword() {
 }
 
 accountElements.toggleBtn?.addEventListener('click', openAccountOverlay);
-accountElements.closeBtn?.addEventListener('click', () => hideOverlay(accountElements.overlay));
+accountElements.closeBtn?.addEventListener('click', () => App.hideOverlay(accountElements.overlay));
 accountElements.usernameBtn?.addEventListener('click', updateUsername);
 accountElements.emailBtn?.addEventListener('click', updateAccountEmail);
 accountElements.passwordBtn?.addEventListener('click', updateAccountPassword);
