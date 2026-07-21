@@ -10,7 +10,7 @@
                 totalRebirths: currentState.totalRebirths,
                 lifetimeCookies: currentState.lifetimeCookies,
                 lifetimeRebirthPoints: currentState.lifetimeRebirthPoints,
-                created: currentState.created ? currentState.created.getTime() : Date.now(),
+                created: currentState.created.getTime()
             },
             factories: Object.keys(App.factoryData).reduce((all, key) => {
                 if (App.factoryData[key]) {
@@ -66,7 +66,7 @@
             }
 
             for (const key in App.rebirthTreeData) {
-                 if (App.rebirthTreeData[key]) App.rebirthTreeData[key].bought = false;
+                if (App.rebirthTreeData[key]) App.rebirthTreeData[key].bought = false;
             }
             if (data.rebirthTree?.bought) {
                 data.rebirthTree.bought.forEach(key => {
@@ -75,7 +75,7 @@
                     }
                 });
             }
-            
+
             App.visibleupgrades.clear();
             if (data.upgrades?.visible) {
                 data.upgrades.visible.forEach(key => {
@@ -93,7 +93,7 @@
         App.supabaseClient
             .from('game_saves')
             .select('save_data, updated_at')
-            .eq('user_id', App.currentUser.id)
+            .eq('user_id', App.getCurrentUser().id)
             .maybeSingle()
             .then(result => {
                 const existing = result.data;
@@ -106,8 +106,8 @@
                 if (existing?.updated_at) {
                     const remoteTime = new Date(existing.updated_at).getTime();
 
-                    if (App.state.lastSave && remoteTime > App.state.lastSave) {
-                        App.state.lastSave = remoteTime;
+                    if (App.getLastSave() && remoteTime > App.getLastSave()) {
+                        App.setLastSave(remoteTime);
                         return;
                     }
                 }
@@ -117,7 +117,7 @@
                 return App.supabaseClient
                     .from('game_saves')
                     .upsert({
-                        user_id: App.currentUser.id,
+                        user_id: App.getCurrentUser().id,
                         save_data: payload
                     })
                     .select('updated_at')
@@ -131,7 +131,7 @@
                         }
 
                         if (savedData?.updated_at) {
-                            App.state.lastSave = new Date(savedData.updated_at).getTime();
+                            App.setLastSave(new Date(savedData.updated_at).getTime());
                         }
                     });
             });
@@ -147,7 +147,7 @@
     }
 
     App.saveGame = function() {
-        if (App.isResetting() || !App.currentUser) return;
+        if (App.isResetting() || !App.getCurrentUser()) return;
 
         if (App.isSaveEmpty()) {
             return;
@@ -157,7 +157,7 @@
     }
 
     App.loadGame = function() {
-        if (!App.currentUser) return;
+        if (!App.getCurrentUser()) return;
         App.loadGameFromCloud();
     };
 
@@ -165,10 +165,10 @@
         if (confirm("Wirklich alles löschen? Fortschritt geht verloren!")) {
             App.setResetting(true);
         
-            if (App.currentUser) {
+            if (App.getCurrentUser()) {
                 Promise.all([
-                    App.supabaseClient.from('game_saves').delete().eq('user_id', App.currentUser.id),
-                    App.supabaseClient.from('leaderboard').delete().eq('user_id', App.currentUser.id)
+                    App.supabaseClient.from('game_saves').delete().eq('user_id', App.getCurrentUser().id),
+                    App.supabaseClient.from('leaderboard').delete().eq('user_id', App.getCurrentUser().id)
                 ]).then((results) => {
                     location.reload();
                 }).catch(() => {

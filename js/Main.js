@@ -23,8 +23,10 @@
             await loadScript('js/GameLogic.js');
             
             window.GameApp.initAll();
-            window.GameApp.loadGame();
-            window.GameApp.updateUI();
+            windows.GameApp.initAuth().then(() => {
+                window.GameApp.loadGame();
+                window.GameApp.updateUI();
+            });
             
         } catch (e) {
             console.error("Fehler beim Laden: ", e);
