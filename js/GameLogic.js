@@ -38,6 +38,9 @@
     App.isResetting = () => isResetting;
     App.setResetting = (val) => { isResetting = val; };
 
+    App.getLastSave = () => state.lastSave;
+    App.setLastSave = (val) => { state.lastSave = val; };
+
     const elements = {
         sidebar: document.querySelector('.sidebar'),
         cookieBtn: document.getElementById('cookie'),

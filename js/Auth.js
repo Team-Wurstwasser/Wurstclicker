@@ -1,6 +1,16 @@
-let currentUser = null;
-let lastAuthCheck = Date.now();
-let currentMode = 'login';
+(function(App) {
+    'use strict';
+
+    App.supabaseClient = supabaseClient;
+
+    let currentUser = null;
+    let lastAuthCheck = Date.now();
+    let currentMode = 'login';
+
+    const showOverlay = (o) => o.style.display = 'flex';
+    const hideOverlay = (o) => o.style.display = 'none';
+
+    App.getCurrentUser = () => currentUser;
 
 const authElements = {
     screen: document.getElementById('auth-screen'),
@@ -177,7 +187,7 @@ function signIn() {
 }
 
 function signOutUser() {
-    saveGame();
+    App.saveGame();
     supabaseClient.auth.signOut()
         .then(() => {
             location.reload();
@@ -364,3 +374,7 @@ authElements.registerForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     signUp();
 });
+
+    App.initAuth = initAuth;
+
+})(window.GameApp = window.GameApp || {});

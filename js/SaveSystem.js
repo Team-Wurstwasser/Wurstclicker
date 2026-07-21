@@ -137,6 +137,30 @@
             });
     }
 
+    App.loadGameFromCloud = function() {
+        App.supabaseClient
+            .from('game_saves')
+            .select('save_data, updated_at')
+            .eq('user_id', App.getCurrentUser().id)
+            .maybeSingle()
+            .then(result => {
+                const data = result.data;
+                const error = result.error;
+
+                if (error || !data) {
+                    return;
+                }
+
+                App.applySaveData(data.save_data);
+
+                if (data.updated_at) {
+                    App.setLastSave(new Date(data.updated_at).getTime());
+                }
+
+                App.updateUI();
+            });
+    };
+
     App.isSaveEmpty = function() {
         const currentState = App.getState();
         const hasNoCookies = currentState.lifetimeCookies.eq(0);
