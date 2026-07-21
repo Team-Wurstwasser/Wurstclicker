@@ -41,7 +41,8 @@
     App.getLastSave = () => state.lastSave;
     App.setLastSave = (val) => { state.lastSave = val; };
 
-    const elements = {
+
+    App.elements = {
         sidebar: document.querySelector('.sidebar'),
         cookieBtn: document.getElementById('cookie'),
         cookieDisplay: document.getElementById('cookie-count'),
