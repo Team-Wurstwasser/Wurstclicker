@@ -16,6 +16,7 @@
         lifetimeRebirthPoints: new Decimal(0),
         isWurstMode: false,
         lastUpdate: Date.now(),
+        lastSave: Date.now(),
         created: new Date()
     };
 
@@ -37,6 +38,10 @@
     App.isResetting = () => isResetting;
     App.setResetting = (val) => { isResetting = val; };
 
+    App.getLastSave = () => state.lastSave;
+    App.setLastSave = (val) => { state.lastSave = val; };
+
+
     App.elements = {
         sidebar: document.querySelector('.sidebar'),
         cookieBtn: document.getElementById('cookie'),
@@ -49,15 +54,6 @@
         settingsOverlay: document.getElementById('settings-overlay'),
         closeSettings: document.getElementById('close-settings'),
         resetBtn: document.getElementById('reset-game'),
-        exportBtn: document.getElementById('export-save'),
-        importBtn: document.getElementById('import-save'),
-        savePopup: document.getElementById('save-popup'),
-        loadPopup: document.getElementById('load-popup'),
-        saveCodeField: document.getElementById('save-code-field'),
-        loadCodeField: document.getElementById('load-code-field'),
-        confirmLoadBtn: document.getElementById('confirm-load'),
-        closeSave: document.getElementById('close-save'),
-        closeLoad: document.getElementById('close-load'),
         rebirthInfo: document.getElementById('rebirth-info'),
         rebirthBtn: document.getElementById('rebirth-btn'),
         rebirthTreeOverlay: document.getElementById('rebirth-tree-overlay'),
@@ -121,7 +117,7 @@
         return App.formatNumber(num).replace('.', ',');
     };
 
-    App.getRebirthPoints = function() {
+    function getRebirthPoints() {
         if (state.lifetimeCookies.lt(App.rebirthConfig.baseCookies)) {
             return new Decimal(0);
         }
@@ -130,11 +126,11 @@
         return rebirthPoints.gt(0) ? rebirthPoints : new Decimal(0);
     };
 
-    App.getRebirthMultiplier = function() {
+    function getRebirthMultiplier() {
         return new Decimal(1).plus(state.lifetimeRebirthPoints.times(App.rebirthConfig.bonusPerPoint));
     };
 
-    App.updateRebirthTree = function() {
+    function updateRebirthTree() {
         const mapWidth = App.elements.rebirthTreeMap.clientWidth || 1600;
         const mapHeight = App.elements.rebirthTreeMap.clientHeight || 1000;
 
@@ -177,7 +173,7 @@
         });
     };
 
-    App.centerRebirthTree = function() {
+    function centerRebirthTree() {
         const scrollContainer = App.elements.rebirthTreeScroll;
         const scrollLeft = (App.elements.rebirthTreeMap.scrollWidth - scrollContainer.clientWidth) / 2;
 
@@ -185,22 +181,22 @@
         scrollContainer.scrollTop = 0;
     };
 
-    App.getFactoryCPS = function() {
+    function getFactoryCPS() {
         let total = new Decimal(0);
         for (const key in factoryData) {
             const item = factoryData[key];
             total = total.plus(new Decimal(item.amount).times(item.cps).times(item.multiplier));
         }
-        return total.times(App.getRebirthMultiplier());
+        return total.times(getRebirthMultiplier());
     };
 
-    App.getClickValue = function() {
-        return state.clickValue.plus(state.clickBonus).times(state.clickMultiplier).times(App.getRebirthMultiplier());
+    function getClickValue() {
+        return state.clickValue.plus(state.clickBonus).times(state.clickMultiplier).times(getRebirthMultiplier());
     };
 
     function getUpgradeDescription(upg) {
         if (upg.type === "clickBoost") {
-            const boost = new Decimal(upg.boost || 1).times(App.getRebirthMultiplier());
+            const boost = new Decimal(upg.boost || 1).times(getRebirthMultiplier());
             const pluralSuffix = boost.equals(1) ? "" : "e";
             return upg.desc.replace("{value}", App.formatValue(boost)).replace("{e}", pluralSuffix);
         }
@@ -208,8 +204,8 @@
         return upg.desc;
     }
 
-    App.performRebirth = function() {
-        const points = App.getRebirthPoints();
+    function performRebirth() {
+        const points = getRebirthPoints();
 
         if (!confirm(`Wirklich Rebirth ausführen? Du erhältst +${App.formatNumber(points)} Rebirth-Punkte und setzt den normalen Fortschritt zurück.`)) {
             return;
@@ -241,18 +237,18 @@
         visibleupgrades.clear();
         App.updateUI();
         App.saveGame();
-        App.updateRebirthTree();
-        showOverlay(App.elements.rebirthTreeOverlay);
-        App.centerRebirthTree();
+        updateRebirthTree();
+        App.showOverlay(App.elements.rebirthTreeOverlay);
+        centerRebirthTree();
     };
 
     App.updateUI = function() {
         App.elements.cookieDisplay.innerText = App.formatNumber(state.cookies);
-        App.elements.cpsDisplay.innerText = App.formatValue(App.getFactoryCPS());
-        const rebirthMultiplier = App.getRebirthMultiplier();
+        App.elements.cpsDisplay.innerText = App.formatValue(getFactoryCPS());
+        const rebirthMultiplier = getRebirthMultiplier();
 
         const rebirthBonusPercent = state.lifetimeRebirthPoints.times(App.rebirthConfig.bonusPerPoint).times(100).round(0, 0);
-        const potentialGain = App.getRebirthPoints();
+        const potentialGain = getRebirthPoints();
         App.elements.rebirthInfo.innerText = `Rebirth: ${App.formatNumber(state.lifetimeRebirthPoints)} Punkte (+${App.formatNumber(rebirthBonusPercent)}%)`;
         App.elements.rebirthBtn.innerText = `Rebirth (+${App.formatNumber(potentialGain)})`;
         App.elements.rebirthBtn.disabled = potentialGain.lte(0);
@@ -303,7 +299,7 @@
                     App.elements.upPopDesc.innerText = getUpgradeDescription(upg);
                     App.elements.upPopPriceBtn.innerText = App.formatNumber(upg.price);
                     updateUpgradePopupButton();
-                    showOverlay(App.elements.upgradePopup);
+                    App.showOverlay(App.elements.upgradePopup);
                 });
             }
         }
@@ -413,13 +409,13 @@
 
         if (!restore) {
             App.updateUI();
-            App.updateRebirthTree();
+            updateRebirthTree();
             App.saveGame();
         }
     };
 
     App.elements.cookieBtn.addEventListener('click', (e) => {
-        const clickGain = App.getClickValue();
+        const clickGain = getClickValue();
         state.cookies = state.cookies.plus(clickGain);
         state.lifetimeCookies = state.lifetimeCookies.plus(clickGain);
         App.updateUI();
@@ -458,57 +454,24 @@
         App.elements.shopText.textContent = isOpen ? ' Schließen' : ' Shop';
     });
 
-    const showOverlay = (o) => o.style.display = 'flex';
-    const hideOverlay = (o) => o.style.display = 'none';
+    App.showOverlay = (o) => o.style.display = 'flex';
+    App.hideOverlay = (o) => o.style.display = 'none';
 
-    App.elements.closeRebirthTree.addEventListener('click', () => hideOverlay(App.elements.rebirthTreeOverlay));
-    App.elements.settingsBtn.addEventListener('click', () => showOverlay(App.elements.settingsOverlay));
-    App.elements.closeSettings.addEventListener('click', () => hideOverlay(App.elements.settingsOverlay));
-
-    App.elements.exportBtn.addEventListener('click', () => {
-        App.elements.saveCodeField.value = btoa(JSON.stringify(App.getSaveData()));
-        showOverlay(App.elements.savePopup);
-    });
-
-    App.elements.importBtn.addEventListener('click', () => showOverlay(App.elements.loadPopup));
-
-    App.elements.confirmLoadBtn.addEventListener('click', () => {
-        const code = App.elements.loadCodeField.value.trim();
-        if (!code) return;
-        try {
-            const data = JSON.parse(atob(code));
-            App.applySaveData(data);
-            App.saveGame();
-            hideOverlay(App.elements.loadPopup);
-            hideOverlay(App.elements.settingsOverlay);
-            alert("Spielstand geladen!");
-        } catch (e) {
-            alert("Ungültiger Code!");
-        }
-    });
+    App.elements.closeRebirthTree.addEventListener('click', () => App.hideOverlay(App.elements.rebirthTreeOverlay));
+    App.elements.settingsBtn.addEventListener('click', () => App.showOverlay(App.elements.settingsOverlay));
+    App.elements.closeSettings.addEventListener('click', () => App.hideOverlay(App.elements.settingsOverlay));
 
     App.elements.resetBtn.addEventListener('click', () => {
-        if (confirm("Wirklich alles löschen? Fortschritt geht verloren!")) {
-            App.setResetting(true);
-            localStorage.removeItem('kekslefant_save');
-            location.reload();
-        }
+        App.resetGame();
     });
 
-    App.elements.rebirthBtn.addEventListener('click', App.performRebirth);
+    App.elements.rebirthBtn.addEventListener('click', performRebirth);
 
-    [App.elements.closeSave, App.elements.closeLoad].forEach(btn => {
-        btn.addEventListener('click', () => {
-            hideOverlay(App.elements.savePopup);
-            hideOverlay(App.elements.loadPopup);
-        });
-    });
-
-    App.elements.closeUpgradePop.addEventListener('click', () => hideOverlay(App.elements.upgradePopup));
+    App.elements.closeUpgradePop.addEventListener('click', () => App.hideOverlay(App.elements.upgradePopup));
     App.elements.confirmUpgradeBuy.addEventListener('click', () => {
         if (currentUpgradeToBuy && state.cookies.gte(upgradeData[currentUpgradeToBuy].price)) {
             App.applyUpgrade(currentUpgradeToBuy);
-            hideOverlay(App.elements.upgradePopup);
+            App.hideOverlay(App.elements.upgradePopup);
             currentUpgradeToBuy = null;
         }
     });
@@ -527,8 +490,8 @@
     setInterval(() => {
         const now = Date.now();
         const deltaTime = new Decimal(now - state.lastUpdate).div(1000);
-        if (App.getFactoryCPS().gt(0)) {
-            const passiveGain = App.getFactoryCPS().times(deltaTime);
+        if (getFactoryCPS().gt(0)) {
+            const passiveGain = getFactoryCPS().times(deltaTime);
             state.cookies = state.cookies.plus(passiveGain);
             state.lifetimeCookies = state.lifetimeCookies.plus(passiveGain);
             App.updateUI();

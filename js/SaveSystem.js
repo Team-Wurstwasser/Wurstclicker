@@ -1,7 +1,7 @@
 (function(App) {
     'use strict';
 
-    App.getSaveData = function() {
+    function getSaveData() {
         const currentState = App.getState();
         return {
             stats: {
@@ -10,7 +10,7 @@
                 totalRebirths: currentState.totalRebirths,
                 lifetimeCookies: currentState.lifetimeCookies,
                 lifetimeRebirthPoints: currentState.lifetimeRebirthPoints,
-                created: currentState.created ? currentState.created.getTime() : Date.now(),
+                created: currentState.created.getTime()
             },
             factories: Object.keys(App.factoryData).reduce((all, key) => {
                 if (App.factoryData[key]) {
@@ -30,7 +30,7 @@
         };
     };
 
-    App.applySaveData = function(data) {
+    function applySaveData(data) {
         if (!data) return;
 
         try {
@@ -66,7 +66,7 @@
             }
 
             for (const key in App.rebirthTreeData) {
-                 if (App.rebirthTreeData[key]) App.rebirthTreeData[key].bought = false;
+                if (App.rebirthTreeData[key]) App.rebirthTreeData[key].bought = false;
             }
             if (data.rebirthTree?.bought) {
                 data.rebirthTree.bought.forEach(key => {
@@ -75,7 +75,7 @@
                     }
                 });
             }
-            
+
             App.visibleupgrades.clear();
             if (data.upgrades?.visible) {
                 data.upgrades.visible.forEach(key => {
@@ -85,33 +85,122 @@
                 });
             }
         } catch (e) {
-            console.error("Fehler beim Laden des Spielstands:", e);
+            return;
         }
     };
 
-    App.saveGame = function() {
-        if (App.isResetting()) return;
+    function saveGameToCloud() {
+        supabaseClient
+            .from('game_saves')
+            .select('save_data, updated_at')
+            .eq('user_id', App.getCurrentUser().id)
+            .maybeSingle()
+            .then(result => {
+                const existing = result.data;
+                const fetchError = result.error;
 
+                if (fetchError) {
+                    return;
+                }
+
+                if (existing?.updated_at) {
+                    const remoteTime = new Date(existing.updated_at).getTime();
+
+                    if (App.getLastSave() && remoteTime > App.getLastSave()) {
+                        App.setLastSave(remoteTime);
+                        return;
+                    }
+                }
+
+                const payload = getSaveData();
+
+                return supabaseClient
+                    .from('game_saves')
+                    .upsert({
+                        user_id: App.getCurrentUser().id,
+                        save_data: payload
+                    })
+                    .select('updated_at')
+                    .single()
+                    .then(saveResult => {
+                        const saveError = saveResult.error;
+                        const savedData = saveResult.data;
+
+                        if (saveError) {
+                            return;
+                        }
+
+                        if (savedData?.updated_at) {
+                            App.setLastSave(new Date(savedData.updated_at).getTime());
+                        }
+                    });
+            });
+    }
+
+    function loadGameFromCloud() {
+        supabaseClient
+            .from('game_saves')
+            .select('save_data, updated_at')
+            .eq('user_id', App.getCurrentUser().id)
+            .maybeSingle()
+            .then(result => {
+                const data = result.data;
+                const error = result.error;
+
+                if (error || !data) {
+                    return;
+                }
+
+                applySaveData(data.save_data);
+
+                if (data.updated_at) {
+                    App.setLastSave(new Date(data.updated_at).getTime());
+                }
+
+                App.updateUI();
+            });
+    };
+
+    function isSaveEmpty() {
         const currentState = App.getState();
         const hasNoCookies = currentState.lifetimeCookies.eq(0);
         const hasNoFactory = Object.values(App.factoryData).every(factory => factory.amount.eq(0));
         const hasNoRebirth = currentState.lifetimeRebirthPoints.eq(0);
 
-        if (hasNoCookies && hasNoFactory && hasNoRebirth) {
+        return hasNoCookies && hasNoFactory && hasNoRebirth;
+    }
+
+    App.saveGame = function() {
+        if (App.isResetting() || !App.getCurrentUser()) return;
+
+        if (isSaveEmpty()) {
             return;
         }
 
-        localStorage.setItem('kekslefant_save', JSON.stringify(App.getSaveData()));
-    };
+        saveGameToCloud();
+    }
 
     App.loadGame = function() {
-        try {
-            const savedData = localStorage.getItem('kekslefant_save');
-            if (savedData) {
-                App.applySaveData(JSON.parse(savedData));
-            }
-        } catch (e) {
-            console.error("LocalStorage konnte nicht gelesen werden:", e);
-        }
+        if (!App.getCurrentUser()) return;
+        loadGameFromCloud();
     };
+
+    App.resetGame = function() {
+        if (confirm("Wirklich alles löschen? Fortschritt geht verloren!")) {
+            App.setResetting(true);
+        
+            if (App.getCurrentUser()) {
+                Promise.all([
+                    supabaseClient.from('game_saves').delete().eq('user_id', App.getCurrentUser().id),
+                    supabaseClient.from('leaderboard').delete().eq('user_id', App.getCurrentUser().id)
+                ]).then((results) => {
+                    location.reload();
+                }).catch(() => {
+                    location.reload(); 
+                });
+            } else {
+                location.reload();
+            }
+        }
+    }
 })(window.GameApp = window.GameApp || {});

@@ -16,13 +16,17 @@
         try {
             await loadScript('js/Decimal.js');
             await loadScript('js/Config.js');
-            await loadScript('js/GameLogic.js');
             await loadScript('js/SaveSystem.js');
             await loadScript('js/InitMethods.js');
+            await loadScript('js/Auth.js');
+            await loadScript('js/Leaderboard.js');
+            await loadScript('js/GameLogic.js');
             
             window.GameApp.initAll();
-            window.GameApp.loadGame();
-            window.GameApp.updateUI();
+            window.GameApp.initAuth().then(() => {
+                window.GameApp.loadGame();
+                window.GameApp.updateUI();
+            });
             
         } catch (e) {
             console.error("Fehler beim Laden: ", e);

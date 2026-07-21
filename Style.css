@@ -310,7 +310,8 @@ body {
     height: 54px;
 }
 
-.factory-buy-btn, .setting-item-btn, .delete-btn, #confirm-load {
+.factory-buy-btn, .setting-item-btn, .delete-btn {
+    flex-shrink: 0;
     position: relative;
     padding: 10px;
     border: none;
@@ -331,9 +332,8 @@ body {
 .factory-buy-btn { width: 100%; background-color: #8b4513; }
 .setting-item-btn { width: 160px; background-color: #8b4513; }
 .delete-btn { width: 160px; background-color: #d32f2f; box-shadow: 0 4px 0 #9a1b1b; }
-#confirm-load { width: 100%; background-color: #2e7d32; box-shadow: 0 4px 0 #1b5e20; justify-content: center; }
 
-.factory-buy-btn:active:not(:disabled), .setting-item-btn:active, .delete-btn:active, #confirm-load:active {
+.factory-buy-btn:active:not(:disabled), .setting-item-btn:active, .delete-btn:active {
     top: 2px;
     box-shadow: 0 2px 0 rgba(0,0,0,0.4);
 }
@@ -467,23 +467,87 @@ body {
 .setting-item:last-child { border-bottom: none; }
 .setting-item span { font-weight: 600; color: #3d2b1f; }
 
-#save-code-field, #load-code-field {
-    width: 100%;
-    height: 100px;
-    margin: 15px 0;
-    padding: 10px;
-    border: 2px solid #3d2b1f;
-    border-radius: 8px;
-    background-color: #fff;
-    font-family: monospace;
-    resize: none;
-}
-
-#close-settings, #close-save, #close-load, #close-upgrade-pop, #close-rebirth-tree {
+#close-settings, #close-upgrade-pop, #close-rebirth-tree, #close-leaderboard, #close-account {
     background: none;
     border: none;
     cursor: pointer;
     padding: 5px;
+}
+
+.settings-modal.leaderboard-modal {
+    width: 92vw;
+    max-width: 640px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.leaderboard-content {
+    overflow-y: auto;
+    flex: 1;
+}
+
+#leaderboard-list {
+    margin: 0;
+    padding: 0 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#leaderboard-list li {
+    color: #3d2b1f;
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 10px 12px;
+    background: rgba(61, 43, 31, 0.06);
+    border-radius: 10px;
+    border: 1px solid rgba(61, 43, 31, 0.12);
+}
+
+.account-content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.account-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(61, 43, 31, 0.1);
+}
+
+.account-block:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.account-label {
+    font-weight: 700;
+    color: #3d2b1f;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 0.5px;
+}
+
+.account-action-btn {
+    justify-content: center;
+    align-self: flex-start;
+    padding: 10px 18px;
+}
+
+#account-message {
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    color: #e74c3c;
+    min-height: 18px;
+}
+
+#account-message.success {
+    color: #2e7d32;
 }
 
 .settings-modal.rebirth-tree-modal {
@@ -528,6 +592,132 @@ body {
 .rebirth-tree-scroll::-webkit-scrollbar { height: 10px; width: 10px; }
 .rebirth-tree-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); border-radius: 999px; }
 .rebirth-tree-scroll::-webkit-scrollbar-thumb { background: #b58a3a; border-radius: 999px; }
+
+.auth-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ccc;
+}
+
+.auth-tab {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #666;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.auth-tab.active {
+    color: #ff9900;
+    border-bottom: 3px solid #ff9900;
+}
+
+.auth-tab:focus {
+    outline: none;
+}
+
+#auth-screen {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    background: #3d2b1f;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+}
+
+.auth-logo {
+    width: 90px;
+    height: 90px;
+}
+
+#auth-screen h1 {
+    color: #fff;
+    margin: 0;
+}
+
+.auth-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+
+.auth-form {
+    flex-direction: column;
+    gap: 8px;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1d3b7;
+    border-radius: 8px;
+    background-color: #fffdf9;
+    font-size: 1rem;
+    color: #4a3b32;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 0; 
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #b58967;
+    box-shadow: 0 0 0 3px rgba(181, 137, 103, 0.15);
+}
+
+.auth-btn-row {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-btn-row .factory-buy-btn {
+    flex: 1;
+}
+
+#auth-error {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 14px;
+    color: #e74c3c;
+}
+
+#auth-error:not(:empty) {
+    margin-top: 10px;
+}
+
+#up-pop-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 15px;
+}
+
+#up-pop-desc {
+    color: #3d2b1f;
+    margin-bottom: 10px;
+}
+
+#confirm-upgrade-buy {
+    margin-top: 20px;
+}
+
+#upgrade-popup .settings-content {
+    text-align: center;
+}
 
 .rebirth-tree-map {
     position: relative;
@@ -630,6 +820,10 @@ body {
 
     .rebirth-tree-scroll {
         max-height: 72vh;
+    }
+
+    .settings-modal.leaderboard-modal {
+        max-height: 80vh;
     }
 
     .rebirth-panel {
