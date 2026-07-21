@@ -1,6 +1,8 @@
 (function(App) {
     'use strict';
 
+    let lastSavedSnapshot = null;
+
     function getSaveData() {
         const currentState = App.getState();
         return {
@@ -90,9 +92,16 @@
     };
 
     function saveGameToCloud() {
+        const payload = getSaveData();
+        const payloadString = JSON.stringify(payload);
+
+        if (payloadString === lastSavedSnapshot) {
+            return;
+        }
+
         supabaseClient
             .from('game_saves')
-            .select('save_data, updated_at')
+            .select('updated_at')
             .eq('user_id', App.getCurrentUser().id)
             .maybeSingle()
             .then(result => {
@@ -112,8 +121,6 @@
                     }
                 }
 
-                const payload = getSaveData();
-
                 return supabaseClient
                     .from('game_saves')
                     .upsert({
@@ -129,6 +136,8 @@
                         if (saveError) {
                             return;
                         }
+
+                        lastSavedSnapshot = payloadString;
 
                         if (savedData?.updated_at) {
                             App.setLastSave(new Date(savedData.updated_at).getTime());
@@ -152,6 +161,7 @@
                 }
 
                 applySaveData(data.save_data);
+                lastSavedSnapshot = JSON.stringify(getSaveData());
 
                 if (data.updated_at) {
                     App.setLastSave(new Date(data.updated_at).getTime());

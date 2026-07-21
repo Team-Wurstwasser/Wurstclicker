@@ -132,6 +132,16 @@
             return;
         }
 
+        if (password.length < 6) {
+            setAuthError('Das Passwort muss mindestens 6 Zeichen lang sein.');
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setAuthError('Bitte gib eine gültige E-Mail-Adresse ein.');
+            return;
+        }
+
         supabaseClient.auth.signUp({ 
             email, 
             password,
@@ -142,7 +152,13 @@
             }
         }).then(result => {
             if (result.error) {
-                setAuthError('Registrierung fehlgeschlagen. Bitte versuche es erneut.');
+                setAuthError(getSignUpErrorMessage(result.error));
+                return;
+            }
+
+            const user = result.data?.user;
+            if (user && user.identities && user.identities.length === 0) {
+                setAuthError('Für diese E-Mail-Adresse existiert bereits ein Konto.');
                 return;
             }
 
@@ -151,6 +167,37 @@
         }).catch(() => {
             setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
         });
+    }
+
+    function getSignUpErrorMessage(error) {
+        const status = error?.status;
+        const code = error?.code || '';
+        const rawMsg = (error?.message || '').toLowerCase();
+
+        if (code === 'user_already_exists' || rawMsg.includes('already registered') || rawMsg.includes('already exists')) {
+            return 'Für diese E-Mail-Adresse existiert bereits ein Konto.';
+        }
+
+        if (code === 'weak_password' || rawMsg.includes('password')) {
+            if (rawMsg.includes('at least') || rawMsg.includes('should be') || rawMsg.includes('characters')) {
+                return 'Das Passwort ist zu schwach. Es muss mindestens 6 Zeichen lang sein.';
+            }
+            return 'Das Passwort erfüllt nicht die Anforderungen.';
+        }
+
+        if (code === 'email_address_invalid' || (rawMsg.includes('invalid') && rawMsg.includes('email'))) {
+            return 'Diese E-Mail-Adresse ist ungültig.';
+        }
+
+        if (code === 'over_email_send_rate_limit' || status === 429 || rawMsg.includes('rate limit')) {
+            return 'Zu viele Versuche. Bitte warte kurz und versuche es erneut.';
+        }
+
+        if (status === 0 || rawMsg.includes('network') || rawMsg.includes('fetch')) {
+            return 'Keine Verbindung zum Server. Bitte überprüfe deine Internetverbindung.';
+        }
+
+        return 'Registrierung fehlgeschlagen. Bitte versuche es erneut.';
     }
 
     function signIn() {

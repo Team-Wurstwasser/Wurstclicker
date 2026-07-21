@@ -8,29 +8,46 @@
         list: document.getElementById('leaderboard-list')
     };
 
-function loadLeaderboard() {
+    function loadLeaderboard() {
+        leaderboardElements.list.innerHTML = '<li class="loading">Lade Highscores...</li>';
+
         supabaseClient
-            .from('v_leaderboard')
+            .from('leaderboard')
             .select('username, best_score')
+            .order('best_score', { ascending: false })
+            .limit(20)
             .then(({ data, error }) => {
-                if (error || !data) {
+                if (error) {
+                    console.error('Fehler beim Laden des Leaderboards:', error);
+                    leaderboardElements.list.innerHTML = '<li class="error">Fehler beim Laden der Daten.</li>';
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    leaderboardElements.list.innerHTML = '<li>Noch keine Einträge vorhanden.</li>';
                     return;
                 }
 
                 const sortedData = data.map(entry => ({
-                    username: entry.username,
+                    username: entry.username || 'Unbekannt',
                     scoreDecimal: new Decimal(entry.best_score || 0)
                 }))
-                .sort((a, b) => b.scoreDecimal.comparedTo(a.scoreDecimal))
-                .slice(0, 50);
+                .sort((a, b) => b.scoreDecimal.comparedTo(a.scoreDecimal));
 
                 leaderboardElements.list.innerHTML = '';
-                sortedData.forEach(entry => {
+
+                sortedData.forEach((entry, index) => {
                     const li = document.createElement('li');
+                    
                     const scoreText = App.formatNumber(entry.scoreDecimal);
-                    li.textContent = `${entry.username || 'Unbekannt'} – ${scoreText} Cookies`;
+
+                    li.textContent = `${entry.username} - ${scoreText} Cookies`;
+
                     leaderboardElements.list.appendChild(li);
                 });
+            })
+            .catch(err => {
+                leaderboardElements.list.innerHTML = '<li class="error">Verbindungsfehler.</li>';
             });
     }
 

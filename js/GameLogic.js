@@ -321,7 +321,6 @@
 
         if (!restore) {
             App.updateUI();
-            App.saveGame();
         }
     };
 
@@ -367,7 +366,6 @@
 
         if (!restore) {
             App.updateUI();
-            App.saveGame();
         }
     };
 
@@ -410,7 +408,6 @@
         if (!restore) {
             App.updateUI();
             updateRebirthTree();
-            App.saveGame();
         }
     };
 
@@ -500,6 +497,12 @@
     }, 100);
 
     setInterval(() => App.saveGame(), 30000);
-    window.addEventListener('beforeunload', () => App.saveGame());
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            App.saveGame();
+        }
+    });
+    window.addEventListener('pagehide', App.saveGame());
 
 })(window.GameApp = window.GameApp || {});
