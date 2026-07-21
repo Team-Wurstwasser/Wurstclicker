@@ -3,7 +3,7 @@ name: Obfuscate & Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - main # Passe den Branch an, falls deiner z.B. 'master' heißt
 
 permissions:
   contents: read
@@ -15,7 +15,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  # 1. Job: Code bauen & obfuszieren
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Repository auschecken
@@ -40,6 +41,14 @@ jobs:
         with:
           path: './dist'
 
+  # 2. Job: Auf GitHub Pages deployen
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build # Wartet, bis der Build-Job fertig ist
+    steps:
       - name: Auf GitHub Pages veröffentlichen
         id: deployment
         uses: actions/deploy-pages@v4
