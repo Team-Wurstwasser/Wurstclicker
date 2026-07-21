@@ -37,8 +37,23 @@
                 <form id="auth-register-form" class="auth-form" style="display: none;">
                     <input id="auth-register-username" name="username" type="text" placeholder="Username" class="auth-input" maxlength="15" autocomplete="username">
                     <input id="auth-register-email" name="email" type="email" placeholder="E-Mail" class="auth-input" autocomplete="email">
+    
                     <input id="auth-register-password" name="new-password" type="password" placeholder="Passwort" class="auth-input" autocomplete="new-password">
+
                     <input id="auth-register-password-confirm" name="new-password-confirm" type="password" placeholder="Passwort bestätigen" class="auth-input" autocomplete="new-password">
+    
+                    <div id="password-requirements" class="auth-input pw-requirements">
+                        <div class="pw-strength-bar"><div id="pw-strength-fill" class="pw-strength-fill"></div></div>
+                        <ul class="pw-rules-list">
+                            <li id="rule-length" class="pw-rule">Mindestens 6 Zeichen</li>
+                            <li id="rule-upper" class="pw-rule">Großbuchstabe (A-Z)</li>
+                            <li id="rule-lower" class="pw-rule">Kleinbuchstabe (a-z)</li>
+                            <li id="rule-number" class="pw-rule">Zahl (0-9)</li>
+                            <li id="rule-special" class="pw-rule">Sonderzeichen (!@#$...)</li>
+                            <li id="rule-match" class="pw-rule">Passwörter stimmen überein</li>
+                        </ul>
+                    </div>
+    
                     <div class="auth-btn-row">
                         <button type="submit" id="auth-register-btn" class="factory-buy-btn">Registrieren</button>
                     </div>

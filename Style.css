@@ -809,6 +809,58 @@ body {
 .rebirth-tree-effect { font-size: 0.72rem; color: rgba(255, 248, 225, 0.88); line-height: 1.15; }
 .rebirth-tree-cost { font-size: 0.72rem; color: #ffd06a; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
 
+.pw-requirements {
+    margin: 4px 0 6px 0;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+}
+
+.pw-strength-bar {
+    height: 4px;
+    background: #e1d3b7;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.pw-strength-fill {
+    height: 100%;
+    width: 0%;
+    background: #d32f2f;
+    transition: all 0.3s ease;
+}
+
+.pw-rules-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.pw-rule {
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pw-rule::before {
+    content: "✕";
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+.pw-rule.valid {
+    color: #2e7d32;
+}
+
+.pw-rule.valid::before {
+    content: "✓";
+    color: #2e7d32;
+}
+
 @media (max-width: 800px) {
     #shop-toggle { display: flex; }
 
