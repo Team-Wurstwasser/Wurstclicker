@@ -169,7 +169,10 @@
                     setAuthError('Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben.');
                     return;
                 }
-                App.initAuth();
+                App.initAuth().then(() => {
+                    App.loadGame();
+                    App.updateUI();
+                });
             })
             .catch(() => {
                 setAuthError('Ein unerwarteter Fehler ist aufgetreten.');

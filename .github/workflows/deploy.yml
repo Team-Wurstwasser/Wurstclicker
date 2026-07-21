@@ -26,12 +26,23 @@ jobs:
       - name: Node.js einrichten
         uses: actions/setup-node@v7
 
+      - name: Supabase.js aus Secrets generieren
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          mkdir -p js
+          cat << EOF > js/Supabase.js
+          const supabaseClient = supabase.createClient(
+            "$SUPABASE_URL",
+            "$SUPABASE_KEY"
+          );
+          EOF
+
       - name: JavaScript obfuszieren
         run: |
-          mkdir -p ../build_temp
-          cp -r ./* ../build_temp/
-          mv ../build_temp ./dist
-          
+          mkdir -p dist
+          cp -r * dist/ 2>/dev/null || true
           npx javascript-obfuscator ./dist --output ./dist \
             --compact true \
             --self-defending true \
