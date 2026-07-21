@@ -117,7 +117,7 @@
         return App.formatNumber(num).replace('.', ',');
     };
 
-    App.getRebirthPoints = function() {
+    function getRebirthPoints() {
         if (state.lifetimeCookies.lt(App.rebirthConfig.baseCookies)) {
             return new Decimal(0);
         }
@@ -126,11 +126,11 @@
         return rebirthPoints.gt(0) ? rebirthPoints : new Decimal(0);
     };
 
-    App.getRebirthMultiplier = function() {
+    function getRebirthMultiplier() {
         return new Decimal(1).plus(state.lifetimeRebirthPoints.times(App.rebirthConfig.bonusPerPoint));
     };
 
-    App.updateRebirthTree = function() {
+    function updateRebirthTree() {
         const mapWidth = App.elements.rebirthTreeMap.clientWidth || 1600;
         const mapHeight = App.elements.rebirthTreeMap.clientHeight || 1000;
 
@@ -173,7 +173,7 @@
         });
     };
 
-    App.centerRebirthTree = function() {
+    function centerRebirthTree() {
         const scrollContainer = App.elements.rebirthTreeScroll;
         const scrollLeft = (App.elements.rebirthTreeMap.scrollWidth - scrollContainer.clientWidth) / 2;
 
@@ -181,22 +181,22 @@
         scrollContainer.scrollTop = 0;
     };
 
-    App.getFactoryCPS = function() {
+    function getFactoryCPS() {
         let total = new Decimal(0);
         for (const key in factoryData) {
             const item = factoryData[key];
             total = total.plus(new Decimal(item.amount).times(item.cps).times(item.multiplier));
         }
-        return total.times(App.getRebirthMultiplier());
+        return total.times(getRebirthMultiplier());
     };
 
-    App.getClickValue = function() {
-        return state.clickValue.plus(state.clickBonus).times(state.clickMultiplier).times(App.getRebirthMultiplier());
+    function getClickValue() {
+        return state.clickValue.plus(state.clickBonus).times(state.clickMultiplier).times(getRebirthMultiplier());
     };
 
     function getUpgradeDescription(upg) {
         if (upg.type === "clickBoost") {
-            const boost = new Decimal(upg.boost || 1).times(App.getRebirthMultiplier());
+            const boost = new Decimal(upg.boost || 1).times(getRebirthMultiplier());
             const pluralSuffix = boost.equals(1) ? "" : "e";
             return upg.desc.replace("{value}", App.formatValue(boost)).replace("{e}", pluralSuffix);
         }
@@ -205,7 +205,7 @@
     }
 
     function performRebirth() {
-        const points = App.getRebirthPoints();
+        const points = getRebirthPoints();
 
         if (!confirm(`Wirklich Rebirth ausführen? Du erhältst +${App.formatNumber(points)} Rebirth-Punkte und setzt den normalen Fortschritt zurück.`)) {
             return;
@@ -237,18 +237,18 @@
         visibleupgrades.clear();
         App.updateUI();
         App.saveGame();
-        App.updateRebirthTree();
+        updateRebirthTree();
         showOverlay(App.elements.rebirthTreeOverlay);
-        App.centerRebirthTree();
+        centerRebirthTree();
     };
 
     App.updateUI = function() {
         App.elements.cookieDisplay.innerText = App.formatNumber(state.cookies);
-        App.elements.cpsDisplay.innerText = App.formatValue(App.getFactoryCPS());
-        const rebirthMultiplier = App.getRebirthMultiplier();
+        App.elements.cpsDisplay.innerText = App.formatValue(getFactoryCPS());
+        const rebirthMultiplier = getRebirthMultiplier();
 
         const rebirthBonusPercent = state.lifetimeRebirthPoints.times(App.rebirthConfig.bonusPerPoint).times(100).round(0, 0);
-        const potentialGain = App.getRebirthPoints();
+        const potentialGain = getRebirthPoints();
         App.elements.rebirthInfo.innerText = `Rebirth: ${App.formatNumber(state.lifetimeRebirthPoints)} Punkte (+${App.formatNumber(rebirthBonusPercent)}%)`;
         App.elements.rebirthBtn.innerText = `Rebirth (+${App.formatNumber(potentialGain)})`;
         App.elements.rebirthBtn.disabled = potentialGain.lte(0);
@@ -409,13 +409,13 @@
 
         if (!restore) {
             App.updateUI();
-            App.updateRebirthTree();
+            updateRebirthTree();
             App.saveGame();
         }
     };
 
     App.elements.cookieBtn.addEventListener('click', (e) => {
-        const clickGain = App.getClickValue();
+        const clickGain = getClickValue();
         state.cookies = state.cookies.plus(clickGain);
         state.lifetimeCookies = state.lifetimeCookies.plus(clickGain);
         App.updateUI();
@@ -490,8 +490,8 @@
     setInterval(() => {
         const now = Date.now();
         const deltaTime = new Decimal(now - state.lastUpdate).div(1000);
-        if (App.getFactoryCPS().gt(0)) {
-            const passiveGain = App.getFactoryCPS().times(deltaTime);
+        if (getFactoryCPS().gt(0)) {
+            const passiveGain = getFactoryCPS().times(deltaTime);
             state.cookies = state.cookies.plus(passiveGain);
             state.lifetimeCookies = state.lifetimeCookies.plus(passiveGain);
             App.updateUI();
