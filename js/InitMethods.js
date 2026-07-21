@@ -12,7 +12,8 @@
                     <img src="${data.icon}" alt="${data.name}" class="factory-icon">
                     <div class="factory-texts">
                         <span class="factory-name">${data.name}</span>
-                        <span class="factory-desc"></span> </div>
+                        <span class="factory-desc"></span>
+                    </div>
                     <div class="factory-count-badge"><span class="factory-amount" id="${key}-amount">0</span></div>
                 </div>
                 <div class="factory-controls">

@@ -20,7 +20,6 @@
             await loadScript('js/SaveSystem.js');
             await loadScript('js/InitMethods.js');
             
-            // Initialisiere nun das gesamte Spiel über das globale Namespace-Objekt
             window.GameApp.initAll();
             window.GameApp.loadGame();
             window.GameApp.updateUI();

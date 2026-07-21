@@ -1,7 +1,6 @@
 (function(App) {
     'use strict';
 
-    // Private Variablen (vollständig abgekapselt)
     let isResetting = false;
     let inputBuffer = "";
     const targetWord = "wurst";
@@ -26,8 +25,10 @@
     const visibleupgrades = new Set();
     let currentUpgradeToBuy = null;
 
-    // Freigabe für andere Module
-    App.state = state;
+    App.getState = () => Object.freeze({ ...state });
+    App.getCookies = () => state.cookies;
+    App.getRebirthPointsAmount = () => state.rebirthPoints;
+    
     App.factoryData = factoryData;
     App.upgradeData = upgradeData;
     App.rebirthTreeData = rebirthTreeData;
@@ -73,6 +74,19 @@
         upPopPriceBtn: document.getElementById('up-pop-price-btn'),
         upgradeContainer: document.getElementById('upgrade-list'),
         factoryContainer: document.getElementById('factory-list')
+    };
+
+    App.setLoadedState = function(loadedStats) {
+        state.cookies = new Decimal(loadedStats.cookies || 0);
+        state.rebirthPoints = new Decimal(loadedStats.rebirthPoints || 0);
+        state.totalRebirths = new Decimal(loadedStats.totalRebirths || 0);
+        state.lifetimeCookies = new Decimal(loadedStats.lifetimeCookies || loadedStats.cookies || 0);
+        state.lifetimeRebirthPoints = new Decimal(loadedStats.lifetimeRebirthPoints || loadedStats.rebirthPoints || 0);
+        state.created = new Date(loadedStats.created || Date.now());
+
+        state.clickValue = new Decimal(1);
+        state.clickBonus = new Decimal(0);
+        state.clickMultiplier = new Decimal(1);
     };
 
     App.formatNumber = function(num) {

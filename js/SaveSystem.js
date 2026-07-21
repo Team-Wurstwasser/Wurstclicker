@@ -2,14 +2,15 @@
     'use strict';
 
     App.getSaveData = function() {
+        const currentState = App.getState();
         return {
             stats: {
-                cookies: App.state.cookies,
-                rebirthPoints: App.state.rebirthPoints,
-                totalRebirths: App.state.totalRebirths,
-                lifetimeCookies: App.state.lifetimeCookies,
-                lifetimeRebirthPoints: App.state.lifetimeRebirthPoints,
-                created: App.state.created.getTime(),
+                cookies: currentState.cookies,
+                rebirthPoints: currentState.rebirthPoints,
+                totalRebirths: currentState.totalRebirths,
+                lifetimeCookies: currentState.lifetimeCookies,
+                lifetimeRebirthPoints: currentState.lifetimeRebirthPoints,
+                created: currentState.created ? currentState.created.getTime() : Date.now(),
             },
             factories: Object.keys(App.factoryData).reduce((all, key) => {
                 if (App.factoryData[key]) {
@@ -35,16 +36,7 @@
         try {
             const stats = data.stats || {};
 
-            App.state.cookies = new Decimal(stats.cookies || 0);
-            App.state.rebirthPoints = new Decimal(stats.rebirthPoints || 0);
-            App.state.totalRebirths = new Decimal(stats.totalRebirths || 0);
-            App.state.lifetimeCookies = new Decimal(stats.lifetimeCookies || stats.cookies || 0);
-            App.state.lifetimeRebirthPoints = new Decimal(stats.lifetimeRebirthPoints || stats.rebirthPoints || 0);  
-            App.state.created = new Date(stats.created || Date.now());
-
-            App.state.clickValue = new Decimal(1);
-            App.state.clickBonus = new Decimal(0);
-            App.state.clickMultiplier = new Decimal(1);
+            App.setLoadedState(stats);
 
             if (data.factories) {
                 for (const key in data.factories) {
@@ -100,9 +92,10 @@
     App.saveGame = function() {
         if (App.isResetting()) return;
 
-        const hasNoCookies = App.state.lifetimeCookies.eq(0);
+        const currentState = App.getState();
+        const hasNoCookies = currentState.lifetimeCookies.eq(0);
         const hasNoFactory = Object.values(App.factoryData).every(factory => factory.amount.eq(0));
-        const hasNoRebirth = App.state.lifetimeRebirthPoints.eq(0);
+        const hasNoRebirth = currentState.lifetimeRebirthPoints.eq(0);
 
         if (hasNoCookies && hasNoFactory && hasNoRebirth) {
             return;
