@@ -23,7 +23,7 @@
             await loadScript('js/GameLogic.js');
             
             window.GameApp.initAll();
-            windows.GameApp.initAuth().then(() => {
+            window.GameApp.initAuth().then(() => {
                 window.GameApp.loadGame();
                 window.GameApp.updateUI();
             });
