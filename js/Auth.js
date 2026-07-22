@@ -406,4 +406,65 @@
         signUp();
     });
 
+    const registerPwInput = authElements.registerPasswordInput;
+    const registerPwConfirmInput = authElements.registerPasswordConfirmInput;
+    const strengthFill = document.getElementById('pw-strength-fill');
+
+    const pwRules = {
+        length: { regex: /.{6,}/, element: document.getElementById('rule-length') },
+        upper: { regex: /[A-Z]/, element: document.getElementById('rule-upper') },
+        lower: { regex: /[a-z]/, element: document.getElementById('rule-lower') },
+        number: { regex: /[0-9]/, element: document.getElementById('rule-number') },
+        special: { regex: /[^A-Za-z0-9]/, element: document.getElementById('rule-special') }
+    };
+
+    const matchElement = document.getElementById('rule-match');
+
+    function checkPasswordRequirements() {
+        const val = registerPwInput.value;
+        const confirmVal = registerPwConfirmInput ? registerPwConfirmInput.value : '';
+        let passedCount = 0;
+        const totalRules = Object.keys(pwRules).length;
+
+        for (const key in pwRules) {
+            const rule = pwRules[key];
+            if (rule.element) {
+                const isPassed = rule.regex.test(val);
+                if (isPassed) {
+                    rule.element.classList.add('valid');
+                    passedCount++;
+                } else {
+                    rule.element.classList.remove('valid');
+                }
+            }
+        }
+
+        if (matchElement) {
+            if (val.length > 0 && val === confirmVal) {
+                matchElement.classList.add('valid');
+            } else {
+                matchElement.classList.remove('valid');
+            }
+        }
+
+        const pct = (passedCount / totalRules) * 100;
+        if (strengthFill) {
+            strengthFill.style.width = pct + '%';
+            if (pct <= 40) {
+                strengthFill.style.backgroundColor = '#d32f2f';
+            } else if (pct <= 80) {
+                strengthFill.style.backgroundColor = '#f57c00';
+            } else {
+                strengthFill.style.backgroundColor = '#2e7d32';
+            }
+        }
+    }
+
+    if (registerPwInput) {
+        registerPwInput.addEventListener('input', checkPasswordRequirements);
+    }
+    if (registerPwConfirmInput) {
+        registerPwConfirmInput.addEventListener('input', checkPasswordRequirements);
+    }
+
 })(window.GameApp = window.GameApp || {});
