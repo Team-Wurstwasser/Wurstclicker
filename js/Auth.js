@@ -332,33 +332,22 @@
             return;
         }
 
-        supabaseClient.auth.signInWithPassword({
-            email: currentUser.email,
-            password: oldPassword
-        }).then(reauthResult => {
-            if (reauthResult.error) {
-                setAccountMessage('Das aktuelle Passwort ist falsch.');
-                return;
-            }
+        supabaseClient.auth.updateUser({
+            password: newPassword,
+            current_password: oldPassword
+        }).then(result => {
+            if (result.error) {
+                setAccountMessage('Das aktuelle Passwort ist falsch oder die Änderung ist fehlgeschlagen.');
+            return;
+        }
 
-            supabaseClient.auth.updateUser({
-                password: newPassword
-            }).then(result => {
-                if (result.error) {
-                    setAccountMessage('Passwort konnte nicht geändert werden.');
-                    return;
-                }
-
-                accountElements.passwordOldInput.value = '';
-                accountElements.passwordInput.value = '';
-                accountElements.passwordConfirmInput.value = '';
-                setAccountMessage('Passwort erfolgreich geändert.', true);
-            }).catch(() => {
-                setAccountMessage('Ein unerwarteter Fehler beim Aktualisieren ist aufgetreten.');
-            });
+            accountElements.passwordOldInput.value = '';
+            accountElements.passwordInput.value = '';
+            accountElements.passwordConfirmInput.value = '';
+            setAccountMessage('Passwort erfolgreich geändert.', true);
 
         }).catch(() => {
-            setAccountMessage('Ein unerwarteter Fehler bei der Überprüfung ist aufgetreten.');
+            setAccountMessage('Ein unerwarteter Fehler beim Aktualisieren ist aufgetreten.');
         });
     }
 
