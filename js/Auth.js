@@ -320,7 +320,8 @@
     function updateAccountPassword(e) {
         e.preventDefault();
         setAccountMessage('');
-                const oldPassword = accountElements.passwordOldInput.value;
+        
+        const oldPassword = accountElements.passwordOldInput.value;
         const newPassword = accountElements.passwordInput.value;
         const confirmPassword = accountElements.passwordConfirmInput.value;
 
