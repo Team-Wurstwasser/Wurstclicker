@@ -179,9 +179,6 @@
         }
 
         if (code === 'weak_password' || rawMsg.includes('password')) {
-            if (rawMsg.includes('at least') || rawMsg.includes('should be') || rawMsg.includes('characters')) {
-                return 'Das Passwort ist zu schwach. Es muss mindestens 6 Zeichen lang sein.';
-            }
             return 'Das Passwort erfüllt nicht die Anforderungen.';
         }
 
