@@ -305,6 +305,18 @@
         });
     }
 
+    function handlePasswordError(error) {
+        const code = error?.code || '';
+        const status = error?.status || 0;
+        const rawMsg = (error?.message || '').toLowerCase();
+
+        if (status === 422 || code === 'weak_password' || rawMsg.includes('weak') || rawMsg.includes('password')) {
+            setAccountMessage('Das neue Passwort ist zu schwach. Bitte wähle ein sichereres Passwort.');
+        } else {
+            setAccountMessage('Das aktuelle Passwort ist falsch oder die Änderung ist fehlgeschlagen.');
+        }
+    }
+
     function updateAccountPassword(e) {
         e.preventDefault();
         setAccountMessage('');
@@ -337,17 +349,17 @@
             current_password: oldPassword
         }).then(result => {
             if (result.error) {
-                setAccountMessage('Das aktuelle Passwort ist falsch oder die Änderung ist fehlgeschlagen.');
-            return;
-        }
+                handlePasswordError(result.error);
+                return;
+            }
 
             accountElements.passwordOldInput.value = '';
             accountElements.passwordInput.value = '';
             accountElements.passwordConfirmInput.value = '';
             setAccountMessage('Passwort erfolgreich geändert.', true);
 
-        }).catch(() => {
-            setAccountMessage('Ein unerwarteter Fehler beim Aktualisieren ist aufgetreten.');
+        }).catch(err => {
+            handlePasswordError(err);
         });
     }
 
