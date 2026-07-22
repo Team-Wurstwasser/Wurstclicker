@@ -18,31 +18,47 @@
 
     <body>
         <div id="auth-screen">
-            <img src="/img/Logo.png" class="auth-logo">
+            <img src="/img/Logo.png" class="auth-logo" alt="Wurstclicker Logo">
             <h1>Wurstclicker</h1>
             <div class="auth-box">
                 <div class="auth-tabs">
-                    <button id="tab-login" class="auth-tab active">Login</button>
-                    <button id="tab-register" class="auth-tab">Registrieren</button>
+                    <button id="tab-login" type="button" class="auth-tab active">Login</button>
+                    <button id="tab-register" type="button" class="auth-tab">Registrieren</button>
                 </div>
 
                 <form id="auth-login-form" class="auth-form">
-                    <input id="auth-login-email" name="email" type="email" placeholder="E-Mail" class="auth-input" autocomplete="username">
-                    <input id="auth-login-password" name="password" type="password" placeholder="Passwort" class="auth-input" autocomplete="current-password">
+                    <div class="form-group">
+                        <label for="auth-login-email" class="form-label">E-Mail</label>
+                        <input id="auth-login-email" name="email" type="email" placeholder="deine@email.de" class="auth-input" autocomplete="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-login-password" class="form-label">Passwort</label>
+                        <input id="auth-login-password" name="password" type="password" placeholder="Passwort" class="auth-input" autocomplete="current-password" required>
+                    </div>
                     <div class="auth-btn-row">
-                        <button type="submit" id="auth-login-btn" class="factory-buy-btn">Einloggen</button>
+                        <button type="submit" id="auth-login-btn" class="factory-buy-btn auth-submit-btn">Einloggen</button>
                     </div>
                 </form>
 
                 <form id="auth-register-form" class="auth-form" style="display: none;">
-                    <input id="auth-register-username" name="username" type="text" placeholder="Username" class="auth-input" maxlength="15" autocomplete="username">
-                    <input id="auth-register-email" name="email" type="email" placeholder="E-Mail" class="auth-input" autocomplete="email">
-    
-                    <input id="auth-register-password" name="new-password" type="password" placeholder="Passwort" class="auth-input" autocomplete="new-password">
+                    <div class="form-group">
+                        <label for="auth-register-username" class="form-label">Benutzername</label>
+                        <input id="auth-register-username" name="username" type="text" placeholder="Username" class="auth-input" maxlength="15" autocomplete="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-register-email" class="form-label">E-Mail</label>
+                        <input id="auth-register-email" name="email" type="email" placeholder="deine@email.de" class="auth-input" autocomplete="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-register-password" class="form-label">Passwort</label>
+                        <input id="auth-register-password" name="new-password" type="password" placeholder="Passwort" class="auth-input" autocomplete="new-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-register-password-confirm" class="form-label">Passwort bestätigen</label>
+                        <input id="auth-register-password-confirm" name="new-password-confirm" type="password" placeholder="Passwort wiederholen" class="auth-input" autocomplete="new-password" required>
+                    </div>
 
-                    <input id="auth-register-password-confirm" name="new-password-confirm" type="password" placeholder="Passwort bestätigen" class="auth-input" autocomplete="new-password">
-    
-                    <div id="password-requirements" class="auth-input pw-requirements">
+                    <div id="password-requirements" class="pw-requirements">
                         <div class="pw-strength-bar"><div id="pw-strength-fill" class="pw-strength-fill"></div></div>
                         <ul class="pw-rules-list">
                             <li id="rule-length" class="pw-rule">Mindestens 6 Zeichen</li>
@@ -53,28 +69,28 @@
                             <li id="rule-match" class="pw-rule">Passwörter stimmen überein</li>
                         </ul>
                     </div>
-    
+
                     <div class="auth-btn-row">
-                        <button type="submit" id="auth-register-btn" class="factory-buy-btn">Registrieren</button>
+                        <button type="submit" id="auth-register-btn" class="factory-buy-btn auth-submit-btn">Registrieren</button>
                     </div>
                 </form>
 
-                <p id="auth-error"></p>
+                <p id="auth-error" class="auth-message-error"></p>
             </div>
         </div>
 
         <button id="shop-toggle">
-            <img src="/img/Shop.png" class="btn-icon" id="shop-icon">
+            <img src="/img/Shop.png" class="btn-icon" id="shop-icon" alt="Shop">
             <span id="shop-text">Shop</span>
         </button>
         
         <button id="settings-toggle">
-            <img src="/img/Settings.png" class="btn-icon">
+            <img src="/img/Settings.png" class="btn-icon" alt="Einstellungen">
         </button>
 
         <div class="header-container">
             <a href="https://team-wurstwasser.com/" class="logo-link">
-                <img class="logo" src="/img/Logo.png">
+                <img class="logo" src="/img/Logo.png" alt="Logo">
                 <span class="logo-text">Team Wurstwasser</span>
             </a>
         </div>
@@ -103,11 +119,8 @@
                     <h2>Shop</h2>
                 </div>
                 <div class="shop-section">Upgrades</div>
-
                 <div id="upgrade-list"></div>
-
                 <div class="shop-section">Gebäude</div>
-
                 <div id="factory-list"></div>
             </aside>
         </div>
@@ -117,7 +130,7 @@
                 <div class="settings-header">
                     <h2>Einstellungen</h2>
                     <button id="close-settings">
-                        <img src="/img/Close.png" class="btn-icon">
+                        <img src="/img/Close.png" class="btn-icon" alt="Schließen">
                     </button>
                 </div>
 
@@ -150,11 +163,11 @@
                 <div class="settings-header">
                     <h2 id="up-pop-name">Upgrade</h2>
                     <button id="close-upgrade-pop">
-                        <img src="/img/Close.png" class="btn-icon">
+                        <img src="/img/Close.png" class="btn-icon" alt="Schließen">
                     </button>
                 </div>
                 <div class="settings-content">
-                    <img id="up-pop-icon" src="">
+                    <img id="up-pop-icon" src="" alt="Upgrade Icon">
                     <p id="up-pop-desc"></p>
                     <button id="confirm-upgrade-buy" class="factory-buy-btn">
                         <span class="buy-label">Kaufen</span>
@@ -172,7 +185,7 @@
                 <div class="settings-header">
                     <h2>Talentbaum</h2>
                     <button id="close-rebirth-tree">
-                        <img src="/img/Close.png" class="btn-icon">
+                        <img src="/img/Close.png" class="btn-icon" alt="Schließen">
                     </button>
                 </div>
 
@@ -192,7 +205,7 @@
                 <div class="settings-header">
                     <h2>Bestenliste</h2>
                     <button id="close-leaderboard">
-                        <img src="/img/Close.png" class="btn-icon">
+                        <img src="/img/Close.png" class="btn-icon" alt="Schließen">
                     </button>
                 </div>
 
@@ -203,36 +216,42 @@
         </div>
 
         <div id="account-overlay" class="overlay">
-            <div class="settings-modal">
+            <div class="settings-modal account-modal">
                 <div class="settings-header">
                     <h2>Konto verwalten</h2>
                     <button id="close-account">
-                        <img src="/img/Close.png" class="btn-icon">
+                        <img src="/img/Close.png" class="btn-icon" alt="Schließen">
                     </button>
                 </div>
 
                 <div class="settings-content account-content">
-                    <div class="account-block">
-                        <span class="account-label">Username</span>
-                        <input id="account-username" type="text" class="auth-input" placeholder="Neuer Username" maxlength="15">
-                        <button id="account-username-btn" class="factory-buy-btn account-action-btn">Username ändern</button>
-                    </div>
+                    <p id="account-message" class="account-message"></p>
 
-                    <div class="account-block">
-                        <span class="account-label">E-Mail</span>
-                        <input id="account-email" type="email" class="auth-input" placeholder="Neue E-Mail-Adresse">
-                        <button id="account-email-btn" class="factory-buy-btn account-action-btn">E-Mail ändern</button>
-                    </div>
+                    <form id="account-username-form" class="account-block">
+                        <label for="account-username" class="account-label">Username</label>
+                        <input id="account-username" type="text" class="auth-input" placeholder="Neuer Username" maxlength="15" autocomplete="username" required>
+                        <button type="submit" id="account-username-btn" class="factory-buy-btn account-action-btn">Username ändern</button>
+                    </form>
 
-                    <div class="account-block">
+                    <form id="account-email-form" class="account-block">
+                        <label for="account-email" class="account-label">E-Mail</label>
+                        <input id="account-email" type="email" class="auth-input" placeholder="Neue E-Mail-Adresse" autocomplete="email" required>
+                        <button type="submit" id="account-email-btn" class="factory-buy-btn account-action-btn">E-Mail ändern</button>
+                    </form>
+
+                    <form id="account-password-form" class="account-block">
                         <span class="account-label">Passwort ändern</span>
-                        <input id="account-password-old" type="password" class="auth-input" placeholder="Aktuelles Passwort" autocomplete="current-password">
-                        <input id="account-password" type="password" class="auth-input" placeholder="Neues Passwort" autocomplete="new-password">
-                        <input id="account-password-confirm" type="password" class="auth-input" placeholder="Neues Passwort bestätigen" autocomplete="new-password">
-                        <button id="account-password-btn" class="factory-buy-btn account-action-btn">Passwort ändern</button>
-                    </div>
-
-                    <p id="account-message"></p>
+                        <div class="form-group">
+                            <input id="account-password-old" type="password" class="auth-input" placeholder="Aktuelles Passwort" autocomplete="current-password" required>
+                        </div>
+                        <div class="form-group">
+                            <input id="account-password" type="password" class="auth-input" placeholder="Neues Passwort" autocomplete="new-password" required>
+                        </div>
+                        <div class="form-group">
+                            <input id="account-password-confirm" type="password" class="auth-input" placeholder="Neues Passwort bestätigen" autocomplete="new-password" required>
+                        </div>
+                        <button type="submit" id="account-password-btn" class="factory-buy-btn account-action-btn">Passwort ändern</button>
+                    </form>
                 </div>
             </div>
         </div>

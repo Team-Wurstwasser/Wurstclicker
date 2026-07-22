@@ -29,14 +29,14 @@
         overlay: document.getElementById('account-overlay'),
         closeBtn: document.getElementById('close-account'),
         message: document.getElementById('account-message'),
+        usernameForm: document.getElementById('account-username-form'),
         usernameInput: document.getElementById('account-username'),
-        usernameBtn: document.getElementById('account-username-btn'),
+        emailForm: document.getElementById('account-email-form'),
         emailInput: document.getElementById('account-email'),
-        emailBtn: document.getElementById('account-email-btn'),
+        passwordForm: document.getElementById('account-password-form'),
         passwordOldInput: document.getElementById('account-password-old'),
         passwordInput: document.getElementById('account-password'),
-        passwordConfirmInput: document.getElementById('account-password-confirm'),
-        passwordBtn: document.getElementById('account-password-btn')
+        passwordConfirmInput: document.getElementById('account-password-confirm')
     };
 
     function showAuthScreen() {
@@ -246,7 +246,8 @@
         App.showOverlay(accountElements.overlay);
     }
 
-    function updateUsername() {
+    function updateUsername(e) {
+        e.preventDefault();
         setAccountMessage('');
         const newUsername = accountElements.usernameInput.value.trim();
 
@@ -272,16 +273,16 @@
             }
 
             currentUser = user;
-            if (authElements.userLabel) {
-                authElements.userLabel.textContent = user.user_metadata?.display_name || user.email;
-            }
+            authElements.userLabel.textContent = user.user_metadata?.display_name || user.email;
+            
             setAccountMessage('Username erfolgreich geändert.', true);
         }).catch(() => {
             setAccountMessage('Ein unerwarteter Fehler ist aufgetreten.');
         });
     }
 
-    function updateAccountEmail() {
+    function updateAccountEmail(e) {
+        e.preventDefault();
         setAccountMessage('');
         const newEmail = accountElements.emailInput.value.trim();
 
@@ -304,7 +305,8 @@
         });
     }
 
-    function updateAccountPassword() {
+    function updateAccountPassword(e) {
+        e.preventDefault();
         setAccountMessage('');
         const oldPassword = accountElements.passwordOldInput.value;
         const newPassword = accountElements.passwordInput.value;
@@ -382,9 +384,10 @@
 
     accountElements.toggleBtn?.addEventListener('click', openAccountOverlay);
     accountElements.closeBtn?.addEventListener('click', () => App.hideOverlay(accountElements.overlay));
-    accountElements.usernameBtn?.addEventListener('click', updateUsername);
-    accountElements.emailBtn?.addEventListener('click', updateAccountEmail);
-    accountElements.passwordBtn?.addEventListener('click', updateAccountPassword);
+    
+    accountElements.usernameForm?.addEventListener('submit', updateUsername);
+    accountElements.emailForm?.addEventListener('submit', updateAccountEmail);
+    accountElements.passwordForm?.addEventListener('submit', updateAccountPassword);
 
     document.addEventListener('visibilitychange', recheckAuthOnReturn);
     window.addEventListener('focus', recheckAuthOnReturn);
