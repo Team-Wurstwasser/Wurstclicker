@@ -149,7 +149,7 @@
                     setAuthError('Wegwerf-E-Mail-Adressen sind nicht erlaubt.');
                     return;
                 }
-                
+
                 executeSupabaseSignUp(email, password, username);
             })
             .catch(err => {
@@ -308,6 +308,22 @@
             return;
         }
 
+        fetch(`https://disposable.debounce.io/?email=${encodeURIComponent(newEmail)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.disposable === "true") {
+                    setAccountMessage('Wegwerf-E-Mail-Adressen sind nicht erlaubt.');
+                    return;
+                }
+
+                executeSupabaseEmailUpdate(newEmail);
+            })
+            .catch(err => {
+                setAccountMessage('Ein unerwarteter Fehler ist aufgetreten.');
+            });
+    }
+
+    function executeSupabaseEmailUpdate(newEmail) {
         supabaseClient.auth.updateUser({
             email: newEmail
         }).then(result => {
