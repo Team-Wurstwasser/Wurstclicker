@@ -414,6 +414,7 @@
         }
 
         if (!restore) {
+            App.saveGame();
             App.updateUI();
             updateRebirthTree();
         }
