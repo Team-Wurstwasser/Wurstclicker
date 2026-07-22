@@ -116,7 +116,7 @@
                     const remoteTime = new Date(existing.updated_at).getTime();
 
                     if (App.getLastSave() && remoteTime > App.getLastSave()) {
-                        App.setLastSave(remoteTime);
+                        loadGameFromCloud();
                         return;
                     }
                 }
@@ -161,11 +161,9 @@
                 }
 
                 applySaveData(data.save_data);
+                
                 lastSavedSnapshot = JSON.stringify(getSaveData());
-
-                if (data.updated_at) {
-                    App.setLastSave(new Date(data.updated_at).getTime());
-                }
+                App.setLastSave(new Date(data.updated_at).getTime());
 
                 App.updateUI();
             });
@@ -200,14 +198,13 @@
             App.setResetting(true);
         
             if (App.getCurrentUser()) {
-                Promise.all([
-                    supabaseClient.from('game_saves').delete().eq('user_id', App.getCurrentUser().id),
-                    supabaseClient.from('leaderboard').delete().eq('user_id', App.getCurrentUser().id)
-                ]).then((results) => {
-                    location.reload();
-                }).catch(() => {
-                    location.reload(); 
-                });
+                supabaseClient.from('game_saves').delete().eq('user_id', App.getCurrentUser().id)
+                    .then(() => {
+                        location.reload();
+                    })
+                    .catch(() => {
+                        location.reload(); 
+                    });
             } else {
                 location.reload();
             }

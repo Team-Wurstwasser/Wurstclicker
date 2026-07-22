@@ -235,6 +235,14 @@
         }
 
         visibleupgrades.clear();
+
+        for (const key in rebirthTreeData) {
+            if (rebirthTreeData[key].bought) {
+                rebirthTreeData[key].bought = false;
+                App.applyRebirth(key, true);
+            }
+        }
+
         App.updateUI();
         App.saveGame();
         updateRebirthTree();
@@ -406,6 +414,7 @@
         }
 
         if (!restore) {
+            App.saveGame();
             App.updateUI();
             updateRebirthTree();
         }
