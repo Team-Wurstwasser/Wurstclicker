@@ -142,6 +142,23 @@
             return;
         }
 
+        fetch(`https://disposable.debounce.io/?email=${encodeURIComponent(email)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.disposable === "true") {
+                    setAuthError('Wegwerf-E-Mail-Adressen sind nicht erlaubt.');
+                    return;
+                }
+                
+                executeSupabaseSignUp(email, password, username);
+            })
+            .catch(err => {
+                setAuthError('Ein unerwarteter Fehler ist aufgetreten.');
+            });
+    }
+
+
+    function executeSupabaseSignUp(email, password, username) {
         supabaseClient.auth.signUp({ 
             email, 
             password,
