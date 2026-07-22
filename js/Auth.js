@@ -274,7 +274,7 @@
 
             currentUser = user;
             authElements.userLabel.textContent = user.user_metadata?.display_name || user.email;
-            
+
             setAccountMessage('Username erfolgreich geändert.', true);
         }).catch(() => {
             setAccountMessage('Ein unerwarteter Fehler ist aufgetreten.');
@@ -308,7 +308,7 @@
     function updateAccountPassword(e) {
         e.preventDefault();
         setAccountMessage('');
-        const oldPassword = accountElements.passwordOldInput.value;
+                const oldPassword = accountElements.passwordOldInput.value;
         const newPassword = accountElements.passwordInput.value;
         const confirmPassword = accountElements.passwordConfirmInput.value;
 
@@ -376,8 +376,7 @@
             currentUser = null;
             try {
                 await supabaseClient.auth.signOut();
-            } catch (e) {
-            }
+            } catch (e) {}
             showAuthScreen();
         }
     }
@@ -406,6 +405,28 @@
         signUp();
     });
 
+    document.addEventListener('click', function(e) {
+        const toggleBtn = e.target.closest('.pw-toggle-btn');
+        if (!toggleBtn) return;
+        e.preventDefault();
+
+        const wrapper = toggleBtn.closest('.password-input-wrapper');
+        if (!wrapper) return;
+
+        const input = wrapper.querySelector('input');
+        const eyeClosedLine = toggleBtn.querySelector('.eye-closed');
+
+        if (input) {
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (eyeClosedLine) eyeClosedLine.style.display = 'block';
+            } else {
+                input.type = 'password';
+                if (eyeClosedLine) eyeClosedLine.style.display = 'none';
+            }
+        }
+    });
+
     const registerPwInput = authElements.registerPasswordInput;
     const registerPwConfirmInput = authElements.registerPasswordConfirmInput;
     const strengthFill = document.getElementById('pw-strength-fill');
@@ -421,6 +442,7 @@
     const matchElement = document.getElementById('rule-match');
 
     function checkPasswordRequirements() {
+        if (!registerPwInput) return;
         const val = registerPwInput.value;
         const confirmVal = registerPwConfirmInput ? registerPwConfirmInput.value : '';
         let passedCount = 0;

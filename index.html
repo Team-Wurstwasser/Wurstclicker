@@ -33,7 +33,16 @@
                     </div>
                     <div class="form-group">
                         <label for="auth-login-password" class="form-label">Passwort</label>
-                        <input id="auth-login-password" name="password" type="password" placeholder="Passwort" class="auth-input" autocomplete="current-password" required>
+                        <div class="password-input-wrapper">
+                            <input id="auth-login-password" name="password" type="password" placeholder="Passwort" class="auth-input" autocomplete="current-password" required>
+                            <button type="button" class="pw-toggle-btn" aria-label="Passwort anzeigen">
+                                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle class="eye-open" cx="12" cy="12" r="3"></circle>
+                                    <line class="eye-closed" x1="2" y1="2" x2="22" y2="22" style="display:none;"></line>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="auth-btn-row">
                         <button type="submit" id="auth-login-btn" class="factory-buy-btn auth-submit-btn">Einloggen</button>
@@ -51,11 +60,29 @@
                     </div>
                     <div class="form-group">
                         <label for="auth-register-password" class="form-label">Passwort</label>
-                        <input id="auth-register-password" name="new-password" type="password" placeholder="Passwort" class="auth-input" autocomplete="new-password" required>
+                        <div class="password-input-wrapper">
+                            <input id="auth-register-password" name="new-password" type="password" placeholder="Passwort" class="auth-input" autocomplete="new-password" required>
+                            <button type="button" class="pw-toggle-btn" aria-label="Passwort anzeigen">
+                                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle class="eye-open" cx="12" cy="12" r="3"></circle>
+                                    <line class="eye-closed" x1="2" y1="2" x2="22" y2="22" style="display:none;"></line>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="auth-register-password-confirm" class="form-label">Passwort bestätigen</label>
-                        <input id="auth-register-password-confirm" name="new-password-confirm" type="password" placeholder="Passwort wiederholen" class="auth-input" autocomplete="new-password" required>
+                        <div class="password-input-wrapper">
+                            <input id="auth-register-password-confirm" name="new-password-confirm" type="password" placeholder="Passwort wiederholen" class="auth-input" autocomplete="new-password" required>
+                            <button type="button" class="pw-toggle-btn" aria-label="Passwort anzeigen">
+                                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle class="eye-open" cx="12" cy="12" r="3"></circle>
+                                    <line class="eye-closed" x1="2" y1="2" x2="22" y2="22" style="display:none;"></line>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                     <div id="password-requirements" class="pw-requirements">
@@ -241,15 +268,46 @@
 
                     <form id="account-password-form" class="account-block">
                         <span class="account-label">Passwort ändern</span>
+                        
                         <div class="form-group">
-                            <input id="account-password-old" type="password" class="auth-input" placeholder="Aktuelles Passwort" autocomplete="current-password" required>
+                            <div class="password-input-wrapper">
+                                <input id="account-password-old" type="password" class="auth-input" placeholder="Aktuelles Passwort" autocomplete="current-password" required>
+                                <button type="button" class="pw-toggle-btn" aria-label="Passwort anzeigen">
+                                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle class="eye-open" cx="12" cy="12" r="3"></circle>
+                                        <line class="eye-closed" x1="2" y1="2" x2="22" y2="22" style="display:none;"></line>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
+
                         <div class="form-group">
-                            <input id="account-password" type="password" class="auth-input" placeholder="Neues Passwort" autocomplete="new-password" required>
+                            <div class="password-input-wrapper">
+                                <input id="account-password" type="password" class="auth-input" placeholder="Neues Passwort" autocomplete="new-password" required>
+                                <button type="button" class="pw-toggle-btn" aria-label="Passwort anzeigen">
+                                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle class="eye-open" cx="12" cy="12" r="3"></circle>
+                                        <line class="eye-closed" x1="2" y1="2" x2="22" y2="22" style="display:none;"></line>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
+
                         <div class="form-group">
-                            <input id="account-password-confirm" type="password" class="auth-input" placeholder="Neues Passwort bestätigen" autocomplete="new-password" required>
+                            <div class="password-input-wrapper">
+                                <input id="account-password-confirm" type="password" class="auth-input" placeholder="Neues Passwort bestätigen" autocomplete="new-password" required>
+                                <button type="button" class="pw-toggle-btn" aria-label="Passwort anzeigen">
+                                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle class="eye-open" cx="12" cy="12" r="3"></circle>
+                                        <line class="eye-closed" x1="2" y1="2" x2="22" y2="22" style="display:none;"></line>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
+
                         <button type="submit" id="account-password-btn" class="factory-buy-btn account-action-btn">Passwort ändern</button>
                     </form>
                 </div>
