@@ -72,6 +72,11 @@
         authElements.registerUsernameInput.value = '';
     }
 
+    function clearLoginForm() {
+        authElements.loginEmailInput.value = '';
+        authElements.loginPasswordInput.value = '';
+    }
+
     function setAccountMessage(msg, isSuccess) {
         accountElements.message.textContent = msg || '';
         accountElements.message.classList.toggle('success', !!isSuccess);
@@ -93,7 +98,11 @@
                         const user = userResult.data?.user;
                         const userError = userResult.error;
 
-                        if (userError || !user) {
+                        const isBanned = user?.banned_until 
+                            ? new Date(user.banned_until) > new Date() 
+                            : false;
+
+                        if (userError || !user || isBanned) {
                             currentUser = null;
                             return supabaseClient.auth.signOut().finally(() => {
                                 showAuthScreen();
@@ -405,16 +414,12 @@
         if (now - lastAuthCheck < 30000) return;
         lastAuthCheck = now;
 
-        const { data, error } = await supabaseClient.auth.getUser();
-
-        if (error || !data?.user) {
-            currentUser = null;
-            try {
-                await supabaseClient.auth.signOut();
-            } catch (e) {}
-            showAuthScreen();
-        }
+        await App.initAuth();
+        clearLoginForm();
     }
+
+    document.addEventListener('visibilitychange', recheckAuthOnReturn);
+    window.addEventListener('focus', recheckAuthOnReturn);
 
     accountElements.toggleBtn?.addEventListener('click', openAccountOverlay);
     accountElements.closeBtn?.addEventListener('click', () => App.hideOverlay(accountElements.overlay));
