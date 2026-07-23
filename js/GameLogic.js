@@ -18,7 +18,8 @@
         lastUpdate: Date.now(),
         lastSave: Date.now(),
         created: new Date(),
-        lastClickTime: Date.now()
+        lastClickTime: Date.now(),
+        isInitialized: false
     };
 
     const factoryData = {};
@@ -57,7 +58,14 @@
 
     App.getVisibleUpgrades = () => Object.freeze(new Set(visibleupgrades));
 
+    App.lockRegistration = function() {
+        state.isInitialized = true;
+    };
+
     App.registerFactory = function(key, data, domElements) {
+        if (state.isInitialized) {
+            return;
+        }
         factoryData[key] = {
             ...data,
             amount: new Decimal(0),
@@ -68,6 +76,9 @@
     };
 
     App.registerUpgrade = function(key, data) {
+        if (state.isInitialized) {
+            return;
+        }
         upgradeData[key] = {
             ...data,
             price: new Decimal(data.price),
@@ -77,6 +88,9 @@
     };
 
     App.registerRebirthTreeNode = function(key, data, domElement) {
+        if (state.isInitialized) {
+            return;
+        }
         rebirthTreeData[key] = {
             ...data,
             cost: new Decimal(data.cost),

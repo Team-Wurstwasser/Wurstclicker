@@ -490,4 +490,9 @@
             parents: ["click_4", "mid_3", "idle_4"]
         }
     };
+
+    Object.freeze(App.factoryConfig);
+    Object.freeze(App.upgradeConfig);
+    Object.freeze(App.rebirthTreeConfig);
+    Object.freeze(App.rebirthConfig);
 })(window.GameApp = window.GameApp || {});

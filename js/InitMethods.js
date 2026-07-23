@@ -86,6 +86,7 @@
         initShop();
         initUpgrades();
         initRebirthTree();
+        App.lockRegistration();
     };
 
 })(window.GameApp = window.GameApp || {});
