@@ -495,4 +495,5 @@
     Object.freeze(App.upgradeConfig);
     Object.freeze(App.rebirthTreeConfig);
     Object.freeze(App.rebirthConfig);
+    
 })(window.GameApp = window.GameApp || {});
