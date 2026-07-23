@@ -85,7 +85,7 @@ jobs:
             --split-strings true \
             --split-strings-chunk-length 3 \
             --numbers-to-expressions true \
-            --identifier-names-generator hexical \
+            --identifier-names-generator hexadecimal \
             --rename-globals false \
             --self-defending true \
             --debug-protection true \
