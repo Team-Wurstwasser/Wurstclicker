@@ -85,13 +85,6 @@ jobs:
           cp .github/build/Main.js dist/js/Main.js
           sed -i "s/BUILD_VERSION/${{ steps.version.outputs.version }}/" dist/js/Main.js
 
-      - name: JavaScript obfuszieren
-        run: |
-          npx javascript-obfuscator ./dist --output ./dist \
-            --compact true \
-            --self-defending true \
-            --string-array true
-
       - name: GitHub Pages Artefakt hochladen
         uses: actions/upload-pages-artifact@v5
         with:
