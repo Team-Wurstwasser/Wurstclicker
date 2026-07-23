@@ -445,26 +445,29 @@
         signUp();
     });
 
-    document.addEventListener('click', function(e) {
-        const toggleBtn = e.target.closest('.pw-toggle-btn');
-        if (!toggleBtn) return;
-        e.preventDefault();
+    document.querySelectorAll('.pw-toggle-btn').forEach(toggleBtn => {
+        toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
 
-        const wrapper = toggleBtn.closest('.password-input-wrapper');
-        if (!wrapper) return;
+            const wrapper = toggleBtn.closest('.password-input-wrapper');
+            if (!wrapper) return;
 
-        const input = wrapper.querySelector('input');
-        const eyeClosedLine = toggleBtn.querySelector('.eye-closed');
+            const input = wrapper.querySelector('input');
+            const eyeOpenIcon = toggleBtn.querySelector('.eye-open');
+            const eyeClosedIcon = toggleBtn.querySelector('.eye-closed');
 
-        if (input) {
-            if (input.type === 'password') {
-                input.type = 'text';
-                if (eyeClosedLine) eyeClosedLine.style.display = 'block';
-            } else {
-                input.type = 'password';
-                if (eyeClosedLine) eyeClosedLine.style.display = 'none';
+            if (input) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    eyeOpenIcon.style.display = 'none';
+                    eyeClosedIcon.style.display = 'block';
+                } else {
+                    input.type = 'password';
+                    eyeOpenIcon.style.display = 'block';
+                    eyeClosedIcon.style.display = 'none';
+                }
             }
-        }
+        });
     });
 
     const registerPwInput = authElements.registerPasswordInput;
