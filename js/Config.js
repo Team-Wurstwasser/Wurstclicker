@@ -118,14 +118,6 @@
             icon: "img/Keks.svg",
             desc: "Deine Klicks werden zehnmal stärker."
         },
-        click_9: {
-            name: "Kraft-Resonator",
-            type: "clickMultiplier",
-            factor: new Decimal(25),
-            price: new Decimal(1000000000000000),
-            icon: "img/Keks.svg",
-            desc: "Deine Klicks sind nun 25-mal so mächtig."
-        },
         huette_1: {
             name: "Bio-Keks",
             type: "factoryMultiplier",
@@ -250,6 +242,15 @@
             price: new Decimal(5000000000),
             factor: new Decimal(15),
             icon: "img/Former.png",
+            desc: "Die Formgebung ist nun 15-mal effizienter."
+        },
+        former_3: {
+            name: "Fraktale Geometrie",
+            type: "factoryMultiplier",
+            target: "former",
+            price: new Decimal(9000000000000),
+            factor: new Decimal(4),
+            icon: "img/Former.png",
             desc: "Die Formgebung ist nun 4-mal effizienter."
         },
         ofen_1: {
@@ -269,6 +270,15 @@
             factor: new Decimal(4),
             icon: "img/Ofen.png",
             desc: "Die Hitze eines sterbenden Sterns. Schwerkraft-Öfen x4."
+        },
+        ofen_3: {
+            name: "Wurst-Hitze",
+            type: "factoryMultiplier",
+            target: "ofen",
+            price: new Decimal(25000000000000),
+            factor: new Decimal(4),
+            icon: "img/Ofen.png",
+            desc: "Die Hitze eines sterbenden Wurst. Schwerkraft-Öfen x4."
         },
         sonde_1: {
             name: "Deep-Space-Backen",
@@ -294,7 +304,7 @@
             factor: new Decimal(1.5),
             price: new Decimal(1000000000000),
             icon: "img/Logo.png",
-            desc: "Erhöht die Produktion ALLER Gebäude um 50%!"
+            desc: "Erhöht die Produktion um 50%!"
         },
         global_2: {
             name: "Keks-Relativität",
@@ -311,6 +321,30 @@
             price: new Decimal(1000000000000000),
             icon: "img/Logo.png",
             desc: "Das Universum besteht nun zu 5% aus Keksteig. Alles x5."
+        },
+        global_4: {
+            name: "Multiversale Kekse",
+            type: "globalMultiplier",
+            factor: new Decimal(10),
+            price: new Decimal("1e18"),
+            icon: "img/Logo.png",
+            desc: "Ein schwarzes Loch aus Schokolade zieht Kekse aus Paralleluniversen an. Alles x10."
+        },
+        global_5: {
+            name: "Quanten-Verschränkung",
+            type: "globalMultiplier",
+            factor: new Decimal(25),
+            price: new Decimal("1e22"),
+            icon: "img/Logo.png",
+            desc: "Jedes Atom im Raumzeit-Kontinuum verhält sich nun gleichzeitig wie ein Keks. Produktion x25."
+        },
+        global_6: {
+            name: "Die Wurst-Keks-Fusion",
+            type: "globalMultiplier",
+            factor: new Decimal(100),
+            price: new Decimal("1e27"),
+            icon: "img/Logo.png",
+            desc: "Die ultimative Vereinigung zweier Welten. Bricht die Gesetze der Physik und multipliziert alles mit 100!"
         }
     };
 
@@ -356,7 +390,7 @@
         },
         idle_1: {
             name: "Passives Backen",
-            desc: "Gebäude produzieren 25% mehr.",
+            desc: "Alle produzieren 25% mehr.",
             type: "globalMultiplier",
             factor: new Decimal(1.25),
             cost: new Decimal(2),
@@ -390,7 +424,7 @@
         },
         idle_2: {
             name: "Dauerwurst",
-            desc: "Alle Gebäude x2.",
+            desc: "Alles x2.",
             type: "globalMultiplier",
             factor: new Decimal(2),
             cost: new Decimal(5),
@@ -399,17 +433,17 @@
             y: 320,
             parents: ["idle_1"]
         },
-        click_3: {
-            name: "Titan-Hand",
-            desc: "Klicks x5.",
-            type: "clickMultiplier",
-            factor: new Decimal(5),
+        left_1: {
+            name: "Wurst-Aktien",
+            desc: "Alles x2.",
+            type: "globalMultiplier",
+            factor: new Decimal(2),
             cost: new Decimal(15),
-            icon: "img/Keks.svg",
+            icon: "img/Logo.png",
             x: 200,
             y: 460,
             parents: ["click_2"]
-        },
+        },        
         bridge_l: {
             name: "Klick-Synergie",
             desc: "Labore verstärken Klicks x10.",
@@ -444,16 +478,16 @@
             y: 460,
             parents: ["idle_2"]
         },
-        click_4: {
-            name: "Klick-Gott",
-            desc: "Klicks +500.",
-            type: "clickBoost",
-            value: new Decimal(500),
+        left_2: {
+            name: "Gott-Wurst",
+            desc: "Die Wurst bekommt ein neues Rezept.",
+            type: "globalMultiplier",
+            factor: new Decimal(2),
             cost: new Decimal(40),
-            icon: "img/Keks.svg",
+            icon: "img/Logo.png",
             x: 200,
             y: 700,
-            parents: ["click_3", "bridge_l"]
+            parents: ["left_1", "bridge_l"]
         },
         mid_3: {
             name: "Dimensions-Senf",
@@ -468,12 +502,11 @@
         },
         idle_4: {
             name: "Galaktisches Netz",
-            desc: "Sonden x15.",
-            type: "factoryMultiplier",
-            target: "sonde",
-            factor: new Decimal(15),
+            desc: "Alles x5.",
+            type: "globalMultiplier",
+            factor: new Decimal(5),
             cost: new Decimal(40),
-            icon: "img/Sonde.png",
+            icon: "img/Logo.png",
             x: 1400,
             y: 700,
             parents: ["idle_3", "bridge_r"]
