@@ -249,16 +249,20 @@
             });
     }
 
-    function signOutUser() {
-        App.saveGame();
-        supabaseClient.auth.signOut()
-            .then(() => {
-                location.reload();
-            })
-            .catch(() => {
-                location.reload(); 
-            });
-    }
+function signOutUser() {
+    App.saveGame()
+        .catch(function() {
+        })
+        .then(function() {
+            return supabaseClient.auth.signOut();
+        })
+        .then(function() {
+            location.reload();
+        })
+        .catch(function() {
+            location.reload();
+        });
+}
 
     function openAccountOverlay() {
         setAccountMessage('');
