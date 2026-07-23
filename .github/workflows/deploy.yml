@@ -68,7 +68,6 @@ jobs:
           for f in Version.js Config.js SaveSystem.js InitMethods.js Auth.js Leaderboard.js GameLogic.js; do
             if [ -f "$f" ]; then
               {
-                echo ""
                 cat "$f"
               } >> Bundle.js
               rm "$f"

@@ -252,6 +252,7 @@
     function signOutUser() {
         App.saveGame();
         supabaseClient.auth.signOut().then(() => {
+            currentUser = null;
             location.reload();
         });
     }
