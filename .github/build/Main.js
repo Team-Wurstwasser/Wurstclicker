@@ -28,6 +28,7 @@
             await loadScript('js/Auth.js?v=BUILD_VERSION');
             await loadScript('js/Leaderboard.js?v=BUILD_VERSION');
             await loadScript('js/GameLogic.js?v=BUILD_VERSION');
+            await loadScript('js/UpdateCheck.js?v=BUILD_VERSION');
 
             window.GameApp.initAll();
             setVersionDisplay();

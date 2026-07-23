@@ -494,6 +494,27 @@ body {
     flex: 1;
 }
 
+.settings-modal.update-modal .settings-header {
+    justify-content: center;
+}
+
+.settings-modal.update-modal .settings-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+}
+
+.settings-modal.update-modal p {
+    margin: 0;
+    color: #3d2b1f;
+}
+
+#reload-update-btn {
+    justify-content: center;
+}
+
 #leaderboard-list {
     margin: 0;
     padding: 0 0 0 28px;

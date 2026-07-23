@@ -28,6 +28,7 @@
             await loadScript('js/Auth.js');
             await loadScript('js/Leaderboard.js');
             await loadScript('js/GameLogic.js');
+            await loadScript('js/UpdateCheck.js');
 
             window.GameApp.initAll();
             setVersionDisplay();
