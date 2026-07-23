@@ -71,14 +71,26 @@ jobs:
           npx javascript-obfuscator ./dist --output ./dist \
             --compact true \
             --control-flow-flattening true \
-            --control-flow-flattening-threshold 0.75 \
+            --control-flow-flattening-threshold 1.0 \
             --dead-code-injection true \
-            --dead-code-injection-threshold 0.4 \
+            --dead-code-injection-threshold 1.0 \
             --string-array true \
-            --string-array-encoding 'base64' \
-            --string-array-threshold 0.8 \
+            --string-array-encoding 'rc4' \
+            --string-array-threshold 1.0 \
+            --string-array-calls-transform true \
+            --string-array-calls-transform-threshold 1.0 \
+            --string-array-rotate true \
+            --string-array-shuffle true \
+            --string-array-index-shift true \
             --split-strings true \
-            --rename-globals false
+            --split-strings-chunk-length 3 \
+            --numbers-to-expressions true \
+            --identifier-names-generator hexical \
+            --rename-globals false \
+            --self-defending true \
+            --debug-protection true \
+            --debug-protection-interval 2000 \
+            --disable-console-output true
 
       - name: GitHub Pages Artefakt hochladen
         uses: actions/upload-pages-artifact@v5
