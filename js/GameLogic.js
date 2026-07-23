@@ -17,7 +17,8 @@
         isWurstMode: false,
         lastUpdate: Date.now(),
         lastSave: Date.now(),
-        created: new Date()
+        created: new Date(),
+        lastClickTime: Date.now()
     };
 
     const factoryData = {};
@@ -421,6 +422,12 @@
     };
 
     App.elements.cookieBtn.addEventListener('click', (e) => {
+        const now = Date.now();
+        if (now - state.lastClickTime < 100) {
+            return;
+        }
+        state.lastClickTime = now;
+
         const clickGain = getClickValue();
         state.cookies = state.cookies.plus(clickGain);
         state.lifetimeCookies = state.lifetimeCookies.plus(clickGain);
