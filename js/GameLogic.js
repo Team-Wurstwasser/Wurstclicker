@@ -18,7 +18,8 @@
         lastUpdate: Date.now(),
         lastSave: Date.now(),
         created: new Date(),
-        lastClickTime: Date.now()
+        lastClickTime: Date.now(),
+        isInitialized: false
     };
 
     const factoryData = {};
@@ -28,13 +29,75 @@
     let currentUpgradeToBuy = null;
 
     App.getState = () => Object.freeze({ ...state });
-    App.getCookies = () => state.cookies;
-    App.getRebirthPointsAmount = () => state.rebirthPoints;
-    
-    App.factoryData = factoryData;
-    App.upgradeData = upgradeData;
-    App.rebirthTreeData = rebirthTreeData;
-    App.visibleupgrades = visibleupgrades;
+    App.getCookies = () => Object.freeze(new Decimal(state.cookies));
+    App.getRebirthPointsAmount = () => Object.freeze(new Decimal(state.rebirthPoints));
+
+    App.getFactoryData = () => {
+        const copy = {};
+        for (const key in factoryData) {
+            copy[key] = Object.freeze({ ...factoryData[key] });
+        }
+        return Object.freeze(copy);
+    };
+
+    App.getUpgradeData = () => {
+        const copy = {};
+        for (const key in upgradeData) {
+            copy[key] = Object.freeze({ ...upgradeData[key] });
+        }
+        return Object.freeze(copy);
+    };
+
+    App.getRebirthTreeData = () => {
+        const copy = {};
+        for (const key in rebirthTreeData) {
+            copy[key] = Object.freeze({ ...rebirthTreeData[key] });
+        }
+        return Object.freeze(copy);
+    };
+
+    App.getVisibleUpgrades = () => Object.freeze(new Set(visibleupgrades));
+
+    App.lockRegistration = function() {
+        state.isInitialized = true;
+    };
+
+    App.registerFactory = function(key, data, domElements) {
+        if (state.isInitialized) {
+            return;
+        }
+        factoryData[key] = {
+            ...data,
+            amount: new Decimal(0),
+            price: new Decimal(data.basePrice),
+            multiplier: new Decimal(1),
+            dom: domElements
+        };
+    };
+
+    App.registerUpgrade = function(key, data) {
+        if (state.isInitialized) {
+            return;
+        }
+        upgradeData[key] = {
+            ...data,
+            price: new Decimal(data.price),
+            bought: false,
+            dom: { btn: null }
+        };
+    };
+
+    App.registerRebirthTreeNode = function(key, data, domElement) {
+        if (state.isInitialized) {
+            return;
+        }
+        rebirthTreeData[key] = {
+            ...data,
+            cost: new Decimal(data.cost),
+            bought: false,
+            dom: domElement
+        };
+    };
 
     App.isResetting = () => isResetting;
     App.setResetting = (val) => { isResetting = val; };
@@ -42,6 +105,63 @@
     App.getLastSave = () => state.lastSave;
     App.setLastSave = (val) => { state.lastSave = val; };
 
+    App.setLoadedState = function(loadedStats) {
+        state.cookies = new Decimal(loadedStats.cookies || 0);
+        state.rebirthPoints = new Decimal(loadedStats.rebirthPoints || 0);
+        state.totalRebirths = new Decimal(loadedStats.totalRebirths || 0);
+        state.lifetimeCookies = new Decimal(loadedStats.lifetimeCookies || loadedStats.cookies || 0);
+        state.lifetimeRebirthPoints = new Decimal(loadedStats.lifetimeRebirthPoints || loadedStats.rebirthPoints || 0);
+        state.created = new Date(loadedStats.created || Date.now());
+
+        state.clickValue = new Decimal(1);
+        state.clickBonus = new Decimal(0);
+        state.clickMultiplier = new Decimal(1);
+    };
+
+    App.loadFactoriesState = function(savedFactories = {}) {
+        for (const key in factoryData) {
+            if (savedFactories[key]) {
+                const savedAmount = new Decimal(savedFactories[key].amount).toNumber();
+
+                factoryData[key].amount = new Decimal(0);
+                factoryData[key].price = new Decimal(factoryData[key].basePrice);
+                factoryData[key].multiplier = new Decimal(1);
+
+                for (let i = 0; i < savedAmount; i++) {
+                    App.buyFactory(key, true);
+                }
+            }
+        }
+    };
+
+    App.loadUpgradesState = function(boughtUpgrades = [], visibleUpgradesList = []) {
+        for (const key in upgradeData) {
+            if (upgradeData[key]) upgradeData[key].bought = false;
+        }
+        boughtUpgrades.forEach(key => {
+            if (upgradeData[key]) {
+                App.applyUpgrade(key, true);
+            }
+        });
+
+        visibleupgrades.clear();
+        visibleUpgradesList.forEach(key => {
+            if (upgradeData[key] && !upgradeData[key].bought) {
+                visibleupgrades.add(key);
+            }
+        });
+    };
+
+    App.loadRebirthTreeState = function(boughtRebirths = []) {
+        for (const key in rebirthTreeData) {
+            if (rebirthTreeData[key]) rebirthTreeData[key].bought = false;
+        }
+        boughtRebirths.forEach(key => {
+            if (rebirthTreeData[key]) {
+                App.applyRebirth(key, true);
+            }
+        });
+    };
 
     App.elements = {
         sidebar: document.querySelector('.sidebar'),
@@ -71,19 +191,6 @@
         upPopPriceBtn: document.getElementById('up-pop-price-btn'),
         upgradeContainer: document.getElementById('upgrade-list'),
         factoryContainer: document.getElementById('factory-list')
-    };
-
-    App.setLoadedState = function(loadedStats) {
-        state.cookies = new Decimal(loadedStats.cookies || 0);
-        state.rebirthPoints = new Decimal(loadedStats.rebirthPoints || 0);
-        state.totalRebirths = new Decimal(loadedStats.totalRebirths || 0);
-        state.lifetimeCookies = new Decimal(loadedStats.lifetimeCookies || loadedStats.cookies || 0);
-        state.lifetimeRebirthPoints = new Decimal(loadedStats.lifetimeRebirthPoints || loadedStats.rebirthPoints || 0);
-        state.created = new Date(loadedStats.created || Date.now());
-
-        state.clickValue = new Decimal(1);
-        state.clickBonus = new Decimal(0);
-        state.clickMultiplier = new Decimal(1);
     };
 
     App.formatNumber = function(num) {
@@ -148,7 +255,7 @@
             node.dom.classList.toggle('bought', !!node.bought);
             node.dom.classList.toggle('available', available);
             node.dom.classList.toggle('locked', !node.bought && !available);
-            
+
             node.dom.disabled = node.bought || !available;
         });
 
@@ -356,7 +463,7 @@
                 break;
 
             case "factoryMultiplier":
-                factoryData[upg.target].multiplier = factoryData[upg.target].multiplier.times(factor);
+                    factoryData[upg.target].multiplier = factoryData[upg.target].multiplier.times(factor);
                 break;
 
             case "globalMultiplier":
@@ -403,7 +510,7 @@
                 break;
 
             case "factoryMultiplier":
-                factoryData[rebirth.target].multiplier = factoryData[rebirth.target].multiplier.times(factor);
+                    factoryData[rebirth.target].multiplier = factoryData[rebirth.target].multiplier.times(factor);
                 break;
 
             case "globalMultiplier":
@@ -463,7 +570,7 @@
 
     App.elements.shopToggle.addEventListener('click', () => {
         const isOpen = App.elements.sidebar.classList.toggle('open');
-        App.elements.shopIcon.src = isOpen ? 'img/Close.png' : 'img/Shop.png';
+        App.elements.shopIcon.src = isOpen ? 'img/Close.svg' : 'img/Shop.svg';
         App.elements.shopText.textContent = isOpen ? ' Schließen' : ' Shop';
     });
 
@@ -520,5 +627,7 @@
         }
     });
     window.addEventListener('pagehide', App.saveGame());
+
+    Object.freeze(App);
 
 })(window.GameApp = window.GameApp || {});

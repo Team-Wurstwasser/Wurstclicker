@@ -1,7 +1,7 @@
 (function(App) {
     'use strict';
 
-    App.initShop = function() {
+    function initShop() {
         App.elements.factoryContainer.innerHTML = '';
 
         for (const [key, data] of Object.entries(App.factoryConfig)) {
@@ -27,48 +27,33 @@
                 </div>`;
 
             App.elements.factoryContainer.appendChild(itemDiv);
-            App.factoryData[key] = {
-                ...data,
-                amount: new Decimal(0),
-                price: new Decimal(data.basePrice),
-                multiplier: new Decimal(1),
-                dom: {
-                    btn: document.getElementById(`buy-${key}`),
-                    price: document.getElementById(`${key}-price`),
-                    amount: document.getElementById(`${key}-amount`),
-                    desc: itemDiv.querySelector('.factory-desc')
-                }
-            };
-            App.factoryData[key].dom.btn.addEventListener('click', () => App.buyFactory(key));
-        }
-    };
 
-    App.initUpgrades = function() {
+            const domElements = {
+                btn: document.getElementById(`buy-${key}`),
+                price: document.getElementById(`${key}-price`),
+                amount: document.getElementById(`${key}-amount`),
+                desc: itemDiv.querySelector('.factory-desc')
+            };
+
+            App.registerFactory(key, data, domElements);
+            domElements.btn.addEventListener('click', () => App.buyFactory(key));
+        }
+    }
+
+    function initUpgrades() {
         for (const [key, data] of Object.entries(App.upgradeConfig)) {
-            App.upgradeData[key] = {
-                ...data,
-                price: new Decimal(data.price),
-                bought: false,
-                dom: { btn: null }
-            };
+            App.registerUpgrade(key, data);
         }
-    };
+    }
 
-    App.initRebirthTree = function() {
+    function initRebirthTree() {
         App.elements.rebirthTreeMap.innerHTML = '';
 
-        for (const [key, data] of Object.entries(App.rebirthTreeConfig)) {
-            App.rebirthTreeData[key] = {
-                ...data,
-                cost: new Decimal(data.cost),
-                bought: false,
-                dom: null
-            };
-        }
+        const rebirthTreeData = App.getRebirthTreeData();
 
-        Object.entries(App.rebirthTreeData).forEach(([key, node]) => {
-            (node.parents || []).forEach(parentKey => {
-                if (!App.rebirthTreeData[parentKey]) return;
+        for (const [key, data] of Object.entries(App.rebirthTreeConfig)) {
+            (data.parents || []).forEach(parentKey => {
+                if (!App.rebirthTreeConfig[parentKey]) return;
 
                 const link = document.createElement('div');
                 link.className = 'rebirth-tree-link';
@@ -76,29 +61,32 @@
                 link.dataset.to = key;
                 App.elements.rebirthTreeMap.appendChild(link);
             });
-        });
+        }
 
-        Object.entries(App.rebirthTreeData).forEach(([key, node]) => {
+        for (const [key, data] of Object.entries(App.rebirthTreeConfig)) {
             const nodeBtn = document.createElement('button');
             nodeBtn.className = 'rebirth-tree-node';
             nodeBtn.dataset.nodeKey = key;
             nodeBtn.innerHTML = `
-                <img src="${node.icon}" alt="${node.name}" class="rebirth-tree-icon">
-                <span class="rebirth-tree-name">${node.name}</span>
-                <span class="rebirth-tree-effect">${node.desc}</span>
-                <span class="rebirth-tree-cost">${App.formatNumber(node.cost)} RP</span>
+                <img src="${data.icon}" alt="${data.name}" class="rebirth-tree-icon">
+                <span class="rebirth-tree-name">${data.name}</span>
+                <span class="rebirth-tree-effect">${data.desc}</span>
+                <span class="rebirth-tree-cost">${App.formatNumber(data.cost)} RP</span>
             `;
-            nodeBtn.style.left = `${(node.x / 1600) * 100}%`;
-            nodeBtn.style.top = `${(node.y / 1000) * 100}%`;
+            nodeBtn.style.left = `${(data.x / 1600) * 100}%`;
+            nodeBtn.style.top = `${(data.y / 1000) * 100}%`;
             nodeBtn.addEventListener('click', () => App.applyRebirth(key));
             App.elements.rebirthTreeMap.appendChild(nodeBtn);
-            node.dom = nodeBtn;
-        });
-    };
+
+            App.registerRebirthTreeNode(key, data, nodeBtn);
+        }
+    }
 
     App.initAll = function() {
-        App.initShop();
-        App.initUpgrades();
-        App.initRebirthTree();
+        initShop();
+        initUpgrades();
+        initRebirthTree();
+        App.lockRegistration();
     };
+
 })(window.GameApp = window.GameApp || {});
