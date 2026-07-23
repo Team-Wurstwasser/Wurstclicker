@@ -21,13 +21,7 @@
 
     async function initGame() {
         try {
-            await loadScript('js/Version.js');
-            await loadScript('js/Config.js');
-            await loadScript('js/SaveSystem.js');
-            await loadScript('js/InitMethods.js');
-            await loadScript('js/Auth.js');
-            await loadScript('js/Leaderboard.js');
-            await loadScript('js/GameLogic.js');
+            await loadScript('js/bundle.js?v=BUILD_VERSION');
 
             window.GameApp.initAll();
             setVersionDisplay();
