@@ -65,13 +65,10 @@ jobs:
         run: |
           cd dist/js
           : > Bundle.js
-          echo "/* Wurstclicker Bundle ${{ steps.version.outputs.version }} - $(date -u +%Y-%m-%dT%H:%M:%SZ) */" >> Bundle.js
-
           for f in Version.js Config.js SaveSystem.js InitMethods.js Auth.js Leaderboard.js GameLogic.js; do
             if [ -f "$f" ]; then
               {
                 echo ""
-                echo "/* ---- $f ---- */"
                 cat "$f"
               } >> Bundle.js
               rm "$f"
