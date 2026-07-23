@@ -251,13 +251,10 @@
 
     function signOutUser() {
         App.saveGame();
-        supabaseClient.auth.signOut()
-            .then(() => {
-                location.reload();
-            })
-            .catch(() => {
-                location.reload(); 
-            });
+        supabaseClient.auth.signOut().then(() => {
+            currentUser = null;
+            location.reload();
+        });
     }
 
     function openAccountOverlay() {

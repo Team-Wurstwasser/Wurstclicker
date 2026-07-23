@@ -939,6 +939,12 @@ body {
     color: #2e7d32;
 }
 
+#app-version {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
 @media (max-width: 800px) {
     #shop-toggle { display: flex; }
 
