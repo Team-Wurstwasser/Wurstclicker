@@ -21,7 +21,7 @@
 
     async function initGame() {
         try {
-            await loadScript('js/bundle.js?v=BUILD_VERSION');
+            await loadScript('js/Bundle.js?v=BUILD_VERSION');
 
             window.GameApp.initAll();
             setVersionDisplay();
