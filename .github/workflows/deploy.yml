@@ -70,8 +70,15 @@ jobs:
         run: |
           npx javascript-obfuscator ./dist --output ./dist \
             --compact true \
-            --self-defending true \
-            --string-array true
+            --control-flow-flattening true \
+            --control-flow-flattening-threshold 0.75 \
+            --dead-code-injection true \
+            --dead-code-injection-threshold 0.4 \
+            --string-array true \
+            --string-array-encoding 'base64' \
+            --string-array-threshold 0.8 \
+            --split-strings true \
+            --rename-globals false
 
       - name: GitHub Pages Artefakt hochladen
         uses: actions/upload-pages-artifact@v5
