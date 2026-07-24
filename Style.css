@@ -960,10 +960,15 @@ body {
     color: #2e7d32;
 }
 
+.setting-item:has(#app-version) {
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    align-items: center;
+}
+
 #app-version {
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
+    font-weight: 600;
 }
 
 @media (max-width: 800px) {
