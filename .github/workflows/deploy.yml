@@ -54,13 +54,17 @@ jobs:
             -e "s|SUPABASE_URL|$SUPABASE_URL|g" \
             -e "s|SUPABASE_KEY|$SUPABASE_KEY|g" \
             dist/js/Supabase.js
-
+            
       - name: JavaScript obfuszieren
         run: |
           npx javascript-obfuscator ./dist --output ./dist \
-            --options-preset medium-obfuscation \
-            --transform-object-keys false \
-            --rename-globals false
+            --compact true \
+            --identifier-names-generator hexadecimal \
+            --string-array true \
+            --rotate-string-array true \
+            --shuffle-string-array true \
+            --split-strings true \
+            --disable-console-output true
 
       - name: GitHub Pages Artefakt hochladen
         uses: actions/upload-pages-artifact@v5
