@@ -511,6 +511,11 @@ body {
     color: #3d2b1f;
 }
 
+.settings-modal.update-modal p.update-hint {
+    font-size: 0.85em;
+    color: rgba(61, 43, 31, 0.7);
+}
+
 #reload-update-btn {
     justify-content: center;
 }

@@ -37,13 +37,6 @@ jobs:
           mkdir -p dist
           cp -r * dist/ 2>/dev/null || true
 
-      - name: Main.js ersetzen
-        run: |
-          cp .github/build/Main.js dist/js/Main.js
-          sed -i \
-            -e "s/BUILD_VERSION/${{ steps.version.outputs.version }}/g" \
-            dist/js/Main.js
-
       - name: Version.js ersetzen
         run: |
           cp .github/build/Version.js dist/js/Version.js
