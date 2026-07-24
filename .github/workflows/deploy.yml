@@ -58,7 +58,9 @@ jobs:
       - name: JavaScript obfuszieren
         run: |
           npx javascript-obfuscator ./dist --output ./dist \
-            --options-preset medium-obfuscation
+            --options-preset medium-obfuscation \
+            --transform-object-keys false \
+            --rename-globals false
 
       - name: GitHub Pages Artefakt hochladen
         uses: actions/upload-pages-artifact@v5
