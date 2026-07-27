@@ -55,26 +55,28 @@ jobs:
             -e "s|SUPABASE_KEY|$SUPABASE_KEY|g" \
             dist/js/Supabase.js
 
-      - name: HTML-Dateien verschlüsseln/obfuszieren
+        
+      - name: HTML-Dateien verschlüsseln
         run: |
-          npx node -e '
+          node -e '
             const fs = require("fs");
-            const glob = require("glob");
-            
-            // Alle HTML-Dateien im dist-Ordner finden
-            const files = glob.sync("./dist/**/*.html");
-            
-            files.forEach(file => {
-              const html = fs.readFileSync(file, "utf8");
-              // HTML in Base64 umwandeln und per JS injizieren
-              const encoded = Buffer.from(html).toString("base64");
-              const jsWrapper = `<script>
-                document.open();
-                document.write(decodeURIComponent(escape(atob("${encoded}"))));
-                document.close();
-              </script>`;
-              fs.writeFileSync(file, jsWrapper);
-            });
+            const path = require("path");
+
+            function processDir(dir) {
+              if (!fs.existsSync(dir)) return;
+              fs.readdirSync(dir).forEach(file => {
+                const fullPath = path.join(dir, file);
+                if (fs.statSync(fullPath).isDirectory()) {
+                  processDir(fullPath);
+                } else if (file.endsWith(".html")) {
+                  const content = fs.readFileSync(fullPath, "utf8");
+                  const b64 = Buffer.from(content).toString("base64");
+                  const encryptedHtml = `<!DOCTYPE html><html><head><script>document.write(decodeURIComponent(escape(atob("${b64}"))));</script></head><body></body></html>`;
+                  fs.writeFileSync(fullPath, encryptedHtml);
+                }
+              });
+            }
+            processDir("./dist");
           '
             
       - name: JavaScript obfuszieren
