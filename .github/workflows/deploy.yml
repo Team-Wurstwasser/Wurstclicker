@@ -54,6 +54,28 @@ jobs:
             -e "s|SUPABASE_URL|$SUPABASE_URL|g" \
             -e "s|SUPABASE_KEY|$SUPABASE_KEY|g" \
             dist/js/Supabase.js
+
+      - name: HTML-Dateien verschlüsseln/obfuszieren
+        run: |
+          npx node -e '
+            const fs = require("fs");
+            const glob = require("glob");
+            
+            // Alle HTML-Dateien im dist-Ordner finden
+            const files = glob.sync("./dist/**/*.html");
+            
+            files.forEach(file => {
+              const html = fs.readFileSync(file, "utf8");
+              // HTML in Base64 umwandeln und per JS injizieren
+              const encoded = Buffer.from(html).toString("base64");
+              const jsWrapper = `<script>
+                document.open();
+                document.write(decodeURIComponent(escape(atob("${encoded}"))));
+                document.close();
+              </script>`;
+              fs.writeFileSync(file, jsWrapper);
+            });
+          '
             
       - name: JavaScript obfuszieren
         run: |
